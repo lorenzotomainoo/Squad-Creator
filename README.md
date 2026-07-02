@@ -1,4 +1,4 @@
-Squad Builder Mondiali (1970-2026)
+Squad Builder Mondiali (1970-2026):
 
 Applicazione web single-page che simula un fantasy draft basato sulle squadre storiche dei Mondiali di Calcio. Crea la tua rosa dei sogni pescando i giocatori dai più grandi mondiali della storia, affronta il tabellone a eliminazione diretta e alza la coppa! Puoi giocare da solo contro i bot o sfidare i tuoi amici in stanza privata.
 Funzionalità
