@@ -244,7 +244,12 @@
       if (p) { p.team = msg.team; p.rating = msg.rating; checkAllTeamsSubmitted(); }
     } else if (msg.type === 'match_result') {
       const match = tournament.rounds[msg.rIdx].matches[msg.mIdx];
-      if (!match || match.played) return; 
+      if (!match) return; 
+      
+      if (match.played) {
+        broadcastTournament();
+        return;
+      }
       
       let winner;
       if (msg.score1 > msg.score2) winner = match.team1;
@@ -645,6 +650,7 @@
   btnNewDraft.addEventListener('click', () => {
     modalOverlay.classList.remove('show');
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
+    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove();
     initRosa(); renderPitch(); extractionLabel.textContent = 'Pronto: premi "Pesca turno"';
     btnPesca.disabled = Object.keys(database).length === 0;
     builderView.classList.remove('hidden'); tournamentView.classList.remove('active'); tournament = null;
@@ -718,23 +724,9 @@
         } else {
           const isUserMatch = (match.team1 && match.team1.isUser) || (match.team2 && match.team2.isUser);
           if (isUserMatch && !tournament.userEliminated) {
-            
-            // FIX CRITICO: Se è multiplayer, non sono l'host, e la partita è tra due umani, non posso giocarla.
-            let canPlay = true;
-            if (isMultiplayer && !mpState.host) {
-              const isHumanVsHuman = match.team1 && !match.team1.id.startsWith('bot') && match.team2 && !match.team2.id.startsWith('bot');
-              if (isHumanVsHuman) {
-                canPlay = false;
-              }
-            }
-
-            if (canPlay) {
-              matchDiv.classList.add('playable');
-              matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn">Gioca Partita</div>`;
-              matchDiv.addEventListener('click', () => startMatchSimulation(match, rIdx, mIdx));
-            } else {
-              matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn" style="background:var(--muted-2);">In attesa dell'Host...</div>`;
-            }
+            matchDiv.classList.add('playable');
+            matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn">Gioca Partita</div>`;
+            matchDiv.addEventListener('click', () => startMatchSimulation(match, rIdx, mIdx));
           } else {
             matchDiv.innerHTML = `<div class="match-team"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team"><span>${t2Name}</span><span class="match-score">-</span></div>`;
           }
@@ -847,18 +839,16 @@
     const myStats = tournament ? (tournament.userStats || { gf: 0, gs: 0, wins: 0, losses: 0 }) : { gf: 0, gs: 0, wins: 0, losses: 0 };
     const myEliminated = tournament ? (tournament.userEliminated || false) : false;
     
-    // FIX CRITICO: Salviamo i match che abbiamo giocato localmente per non farceli resettare dall'host
-    const locallyPlayedMatches = {};
-    if (tournament) {
-      tournament.rounds.forEach((round, rIdx) => {
-        round.matches.forEach((match, mIdx) => {
-          if (match.played) {
-            locallyPlayedMatches[`${rIdx}-${mIdx}`] = {
-              score1: match.score1, score2: match.score2, pens1: match.pens1, pens2: match.pens2, winner: match.winner
-            };
-          }
-        });
-      });
+    // FIX CRITICO: Controlliamo se l'host ha confermato il nostro risultato pending
+    if (pendingMatchResult) {
+      const hostMatch = t.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
+      if (hostMatch && hostMatch.played) {
+        clearInterval(pendingMatchInterval);
+        pendingMatchResult = null;
+      } else {
+        // L'host non ha ancora aggiornato il tabellone, reinvia immediatamente
+        hostConnection.send({ type: 'match_result', rIdx: pendingMatchResult.rIdx, mIdx: pendingMatchResult.mIdx, score1: pendingMatchResult.score1, score2: pendingMatchResult.score2, pens1: pendingMatchResult.pens1, pens2: pendingMatchResult.pens2 });
+      }
     }
 
     tournament = t;
@@ -870,27 +860,19 @@
         if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
         if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
         
-        // Se l'host non ha ancora registrato il risultato, ma io l'ho giocato, mantengo il mio risultato
-        if (!match.played && locallyPlayedMatches[`${rIdx}-${mIdx}`]) {
-          const local = locallyPlayedMatches[`${rIdx}-${mIdx}`];
+        // Se l'host non ha ancora registrato il risultato, ma io l'ho giocato, mantengo il mio risultato locale per non far riappetire il tasto "Gioca"
+        if (pendingMatchResult && rIdx === pendingMatchResult.rIdx && mIdx === pendingMatchResult.mIdx && !match.played) {
           match.played = true;
-          match.score1 = local.score1;
-          match.score2 = local.score2;
-          match.pens1 = local.pens1;
-          match.pens2 = local.pens2;
-          match.winner = local.winner;
+          match.score1 = pendingMatchResult.score1;
+          match.score2 = pendingMatchResult.score2;
+          match.pens1 = pendingMatchResult.pens1;
+          match.pens2 = pendingMatchResult.pens2;
+          if (match.score1 > match.score2) match.winner = match.team1;
+          else if (match.score2 > match.score1) match.winner = match.team2;
+          else match.winner = (match.pens1 > match.pens2) ? match.team1 : match.team2;
         }
       });
     });
-
-    // Se ho un risultato in attesa di conferma, e l'host l'ha registrato, fermo il retry
-    if (pendingMatchResult) {
-      const match = tournament.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
-      if (match && match.played) {
-        clearInterval(pendingMatchInterval);
-        pendingMatchResult = null;
-      }
-    }
 
     renderBracket();
     if (checkTournamentEnd()) return;
@@ -916,7 +898,11 @@
     const userWasPlaying = match.team1.isUser || match.team2.isUser;
     if (userWasPlaying) {
       if (winner.isUser) tournament.userStats.wins++;
-      else { tournament.userStats.losses++; tournament.userEliminated = true; }
+      else { 
+        tournament.userStats.losses++; 
+        tournament.userEliminated = true; 
+        showEliminatedScreen(); // Effetto sorpresa
+      }
     }
 
     const { rIdx, mIdx } = currentMatchData;
@@ -950,8 +936,28 @@
     }, 2000);
   }
 
+  // EFFETTO SORPRESA: Schermata di attesa se vieni eliminato
+  function showEliminatedScreen() {
+    const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
+    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove();
+    
+    modalEyebrow.textContent = "Eliminato";
+    modalTitle.textContent = "Sei fuori dal Mondiale!";
+    modalContent.style.display = 'none'; 
+    btnPlayTournament.style.display = 'none'; 
+    btnNewDraft.textContent = 'Esci';
+    
+    const elDiv = document.createElement('div');
+    elDiv.id = 'eliminatedDiv';
+    elDiv.innerHTML = `<div style="font-size:40px; margin-bottom:20px;">😞</div><p style="margin-bottom: 20px; color: var(--muted); font-family: var(--font-mono); font-size: 13px;">In attesa che il torneo finisca per scoprire il vincitore...</p>`;
+    modalContent.parentNode.insertBefore(elDiv, modalContent);
+    modalOverlay.classList.add('show');
+  }
+
   function showChampion(winner) {
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
+    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove(); // Rimuovi la schermata di eliminazione se presente
+    
     modalEyebrow.textContent = "Fine Mondiale"; modalTitle.textContent = "Campione del Mondo!"; modalTitle.classList.add('champion');
     modalContent.style.display = 'none'; btnPlayTournament.style.display = 'none'; btnNewDraft.textContent = 'Torna alla Home';
     let summaryHTML = `<div style="font-size:60px; margin-bottom:20px;">🏆</div><h2 class="champion" style="margin-bottom: 20px;">${escapeHTML(winner.name)}</h2>`;
