@@ -764,7 +764,7 @@
     });
 
     // FIX CRITICO: RIMOSSO IL SORT DA QUI, VENIVA FATTO IN LOCALE DA OGNI GIOCATORE
-    // teams.sort(() => Math.random() - 0.5);
+    // teams.sort(() => Math.random() - 0.5);;;
 
     tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
 
