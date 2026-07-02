@@ -1,0 +1,385 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Spagna, Iker Casillas, POR, 93
+Spagna, Sergio Ramos, TD, 91
+Spagna, Gerard Piqué, DC, 89
+Spagna, Carles Puyol, DC, 90
+Spagna, Joan Capdevila, TS, 87
+Spagna, Sergio Busquets, CC, 89
+Spagna, Xabi Alonso, CC, 91
+Spagna, Xavi, CC, 94
+Spagna, Andrés Iniesta, TRQ, 95
+Spagna, David Villa, ATT, 93
+Spagna, Fernando Torres, ATT, 91
+
+Paesi Bassi, Maarten Stekelenburg, POR, 88
+Paesi Bassi, Gregory van der Wiel, TD, 86
+Paesi Bassi, John Heitinga, DC, 87
+Paesi Bassi, Joris Mathijsen, DC, 86
+Paesi Bassi, Giovanni van Bronckhorst, TS, 88
+Paesi Bassi, Mark van Bommel, CC, 88
+Paesi Bassi, Wesley Sneijder, TRQ, 92
+Paesi Bassi, Dirk Kuyt, CC, 87
+Paesi Bassi, Arjen Robben, ATT, 93
+Paesi Bassi, Robin van Persie, ATT, 91
+Paesi Bassi, Rafael van der Vaart, CC, 90
+
+Germania, Manuel Neuer, POR, 90
+Germania, Philipp Lahm, TD, 91
+Germania, Per Mertesacker, DC, 87
+Germania, Arne Friedrich, DC, 86
+Germania, Holger Badstuber, DC, 87
+Germania, Sami Khedira, CC, 88
+Germania, Bastian Schweinsteiger, CC, 91
+Germania, Mesut Özil, TRQ, 91
+Germania, Thomas Müller, ATT, 90
+Germania, Lukas Podolski, ATT, 88
+Germania, Miroslav Klose, ATT, 91
+
+Brasile, Júlio César, POR, 90
+Brasile, Maicon, TD, 89
+Brasile, Lúcio, DC, 90
+Brasile, Juan, DC, 87
+Brasile, Michel Bastos, TS, 86
+Brasile, Gilberto Silva, CC, 88
+Brasile, Felipe Melo, CC, 86
+Brasile, Kaká, TRQ, 92
+Brasile, Robinho, ATT, 88
+Brasile, Luís Fabiano, ATT, 90
+Brasile, Elano, CC, 87
+
+Argentina, Sergio Romero, POR, 88
+Argentina, Jonás Gutiérrez, TD, 85
+Argentina, Nicolás Otamendi, DC, 87
+Argentina, Martín Demichelis, DC, 86
+Argentina, Gabriel Heinze, DC, 87
+Argentina, Javier Mascherano, CC, 91
+Argentina, Ángel Di María, CC, 89
+Argentina, Juan Sebastián Verón, TRQ, 88
+Argentina, Lionel Messi, ATT, 94
+Argentina, Gonzalo Higuaín, ATT, 91
+Argentina, Carlos Tevez, ATT, 90
+
+Inghilterra, David James, POR, 88
+Inghilterra, Glen Johnson, TD, 87
+Inghilterra, John Terry, DC, 90
+Inghilterra, Matthew Upson, DC, 86
+Inghilterra, Ashley Cole, TS, 89
+Inghilterra, Steven Gerrard, CC, 92
+Inghilterra, Frank Lampard, CC, 92
+Inghilterra, Gareth Barry, CC, 87
+Inghilterra, Aaron Lennon, CC, 86
+Inghilterra, Wayne Rooney, ATT, 92
+Inghilterra, Emile Heskey, ATT, 85
+
+Portogallo, Eduardo, POR, 88
+Portogallo, Paulo Ferreira, TD, 84
+Portogallo, Ricardo Carvalho, DC, 90
+Portogallo, Bruno Alves, DC, 88
+Portogallo, Fábio Coentrão, TS, 88
+Portogallo, Pepe, DC, 89
+Portogallo, Raul Meireles, CC, 89
+Portogallo, Tiago, CC, 87
+Portogallo, Simão, TRQ, 88
+Portogallo, Cristiano Ronaldo, ATT, 94
+Portogallo, Liedson, ATT, 87
+
+Italia, Gianluigi Buffon, POR, 92
+Italia, Fabio Cannavaro, DC, 90
+Italia, Giorgio Chiellini, DC, 89
+Italia, Leonardo Bonucci, DC, 85
+Italia, Gianluca Zambrotta, TD, 87
+Italia, Domenico Criscito, TS, 86
+Italia, Andrea Pirlo, CC, 91
+Italia, Daniele De Rossi, CC, 89
+Italia, Claudio Marchisio, CC, 87
+Italia, Vincenzo Iaquinta, ATT, 88
+Italia, Alberto Gilardino, ATT, 89
+
+Francia, Hugo Lloris, POR, 89
+Francia, Bacary Sagna, TD, 87
+Francia, William Gallas, DC, 88
+Francia, Éric Abidal, TS, 87
+Francia, Patrice Evra, TS, 88
+Francia, Jérémy Toulalan, CC, 86
+Francia, Yoann Gourcuff, TRQ, 89
+Francia, Franck Ribéry, CC, 91
+Francia, Thierry Henry, ATT, 90
+Francia, Nicolas Anelka, ATT, 89
+Francia, Florent Malouda, ATT, 87
+
+Costa d'Avorio, Boubacar Barry, POR, 87
+Costa d'Avorio, Emmanuel Eboué, TD, 86
+Costa d'Avorio, Kolo Touré, DC, 88
+Costa d'Avorio, Didier Zokora, CC, 87
+Costa d'Avorio, Didier Drogba, ATT, 92
+Costa d'Avorio, Salomon Kalou, ATT, 88
+Costa d'Avorio, Yaya Touré, CC, 91
+Costa d'Avorio, Gervinho, TRQ, 88
+Costa d'Avorio, Kader Keïta, CC, 86
+Costa d'Avorio, Guy Demel, DC, 85
+Costa d'Avorio, Arthur Boka, TS, 86
+
+USA, Tim Howard, POR, 90
+USA, Steve Cherundolo, TD, 86
+USA, Oguchi Onyewu, DC, 87
+USA, Jay DeMerit, DC, 85
+USA, Carlos Bocanegra, DC, 86
+USA, Landon Donovan, CC, 91
+USA, Clint Dempsey, TRQ, 90
+USA, Michael Bradley, CC, 88
+USA, Maurice Edu, CC, 86
+USA, Jozy Altidore, ATT, 88
+USA, Robbie Findley, ATT, 85
+
+Danimarca, Thomas Sørensen, POR, 88
+Danimarca, Daniel Agger, DC, 88
+Danimarca, Simon Kjær, DC, 87
+Danimarca, Dennis Rommedahl, TD, 86
+Danimarca, Lars Jacobsen, TD, 86
+Danimarca, Christian Poulsen, CC, 88
+Danimarca, Thomas Kahlenberg, TRQ, 87
+Danimarca, Nicklas Bendtner, ATT, 89
+Danimarca, Jon Dahl Tomasson, ATT, 88
+Danimarca, William Kvist, CC, 86
+Danimarca, Simon Poulsen, TS, 82
+
+Giappone, Eiji Kawashima, POR, 88
+Giappone, Yuto Nagatomo, TD, 87
+Giappone, Marcus Tulio Tanaka, DC, 88
+Giappone, Yuji Nakazawa, DC, 87
+Giappone, Atsuto Uchida, TS, 86
+Giappone, Makoto Hasebe, CC, 88
+Giappone, Yasuhito Endō, CC, 89
+Giappone, Keisuke Honda, TRQ, 91
+Giappone, Shinji Okazaki, ATT, 88
+Giappone, Daisuke Matsui, CC, 83
+Giappone, Tadanari Lee, ATT, 86
+
+Corea del Sud, Jung Sung-ryong, POR, 88
+Corea del Sud, Lee Young-pyo, TS, 86
+Corea del Sud, Cha Du-ri, TD, 86
+Corea del Sud, Lee Jung-soo, DC, 87
+Corea del Sud, Cho Yong-hyung, DC, 82
+Corea del Sud, Park Ji-sung, CC, 90
+Corea del Sud, Ki Sung-yueng, CC, 88
+Corea del Sud, Lee Chung-yong, TRQ, 88
+Corea del Sud, Park Chu-young, ATT, 89
+Corea del Sud, Lee Keun-ho, ATT, 87
+Corea del Sud, Yeom Ki-hun, CC, 86
+
+Nigeria, Vincent Enyeama, POR, 89
+Nigeria, Joseph Yobo, DC, 88
+Nigeria, Danny Shittu, DC, 86
+Nigeria, Taye Taiwo, TS, 88
+Nigeria, Chidi Odiah, TD, 85
+Nigeria, Dickson Etuhu, CC, 82
+Nigeria, Sani Kaita, CC, 86
+Nigeria, Kalu Uche, TRQ, 87
+Nigeria, Obafemi Martins, ATT, 89
+Nigeria, Yakubu Aiyegbeni, ATT, 88
+Nigeria, Victor Obinna, ATT, 87
+
+Grecia, Alexandros Tzorvas, POR, 87
+Grecia, Vasilis Torosidis, TD, 88
+Grecia, Sokratis Papastathopoulos, DC, 88
+Grecia, Avraam Papadopoulos, DC, 87
+Grecia, Giorgos Karagounis, CC, 89
+Grecia, Kostas Katsouranis, CC, 88
+Grecia, Giorgos Samaras, ATT, 89
+Grecia, Dimitris Salpingidis, ATT, 88
+Grecia, Angelos Charisteas, ATT, 87
+Grecia, Alexandros Tziolis, CC, 81
+Grecia, Sotiris Ninis, TRQ, 88
+
+Svizzera, Diego Benaglio, POR, 88
+Svizzera, Stephan Lichtsteiner, TD, 88
+Svizzera, Philippe Senderos, DC, 87
+Svizzera, Stéphane Grichting, DC, 86
+Svizzera, Reto Ziegler, TS, 86
+Svizzera, Gökhan Inler, CC, 89
+Svizzera, Valon Behrami, CC, 88
+Svizzera, Tranquillo Barnetta, TRQ, 87
+Svizzera, Xherdan Shaqiri, CC, 88
+Svizzera, Blaise Nkufo, ATT, 88
+Svizzera, Alexander Frei, ATT, 89
+
+Messico, Óscar Pérez, POR, 87
+Messico, Carlos Salcido, TS, 88
+Messico, Rafael Márquez, DC, 90
+Messico, Francisco Rodríguez, DC, 87
+Messico, Ricardo Osorio, TD, 86
+Messico, Andrés Guardado, CC, 89
+Messico, Gerardo Torrado, CC, 88
+Messico, Giovani dos Santos, TRQ, 89
+Messico, Cuauhtémoc Blanco, TRQ, 88
+Messico, Carlos Vela, ATT, 90
+Messico, Guillermo Franco, ATT, 87
+
+Uruguay, Fernando Muslera, POR, 86
+Uruguay, Maxi Pereira, TD, 85
+Uruguay, Diego Lugano, DC, 87
+Uruguay, Diego Godín, DC, 86
+Uruguay, Jorge Fucile, TS, 84
+Uruguay, Diego Pérez, CC, 85
+Uruguay, Egidio Arévalo Ríos, CC, 85
+Uruguay, Álvaro Pereira, CC, 84
+Uruguay, Diego Forlán, TRQ, 91
+Uruguay, Luis Suárez, ATT, 88
+Uruguay, Edinson Cavani, ATT, 86
+
+Sudafrica, Itumeleng Khune, POR, 82
+Sudafrica, Siboniso Gaxa, TD, 80
+Sudafrica, Aaron Mokoena, DC, 82
+Sudafrica, Bongani Khumalo, DC, 81
+Sudafrica, Tsepo Masilela, TS, 81
+Sudafrica, Kagisho Dikgacoi, CC, 81
+Sudafrica, Reneilwe Letsholonyane, CC, 80
+Sudafrica, Steven Pienaar, TRQ, 84
+Sudafrica, Siphiwe Tshabalala, CC, 82
+Sudafrica, Teko Modise, TRQ, 81
+Sudafrica, Katlego Mphela, ATT, 82
+
+Paraguay, Justo Villar, POR, 85
+Paraguay, Carlos Bonet, TD, 83
+Paraguay, Paulo da Silva, DC, 84
+Paraguay, Antolín Alcaraz, DC, 84
+Paraguay, Claudio Morel Rodríguez, TS, 83
+Paraguay, Enrique Vera, CC, 82
+Paraguay, Víctor Cáceres, CC, 83
+Paraguay, Cristian Riveros, CC, 83
+Paraguay, Nelson Valdez, ATT, 84
+Paraguay, Lucas Barrios, ATT, 85
+Paraguay, Roque Santa Cruz, ATT, 84
+
+Cile, Claudio Bravo, POR, 86
+Cile, Mauricio Isla, TD, 84
+Cile, Gary Medel, DC, 85
+Cile, Waldo Ponce, DC, 83
+Cile, Jean Beausejour, TS, 83
+Cile, Arturo Vidal, CC, 86
+Cile, Carlos Carmona, CC, 83
+Cile, Matías Fernández, TRQ, 84
+Cile, Jorge Valdivia, TRQ, 85
+Cile, Alexis Sánchez, ATT, 87
+Cile, Humberto Suazo, ATT, 86
+
+Ghana, Richard Kingson, POR, 83
+Ghana, John Paintsil, TD, 84
+Ghana, John Mensah, DC, 85
+Ghana, Isaac Vorsah, DC, 83
+Ghana, Hans Sarpei, TS, 82
+Ghana, Anthony Annan, CC, 84
+Ghana, Kevin-Prince Boateng, CC, 85
+Ghana, Kwadwo Asamoah, CC, 84
+Ghana, Sulley Muntari, CC, 85
+Ghana, André Ayew, TRQ, 84
+Ghana, Asamoah Gyan, ATT, 87
+
+Australia, Mark Schwarzer, POR, 85
+Australia, Luke Wilkshire, TD, 82
+Australia, Craig Moore, DC, 82
+Australia, Lucas Neill, DC, 83
+Australia, Scott Chipperfield, TS, 81
+Australia, Jason Culina, CC, 82
+Australia, Vince Grella, CC, 81
+Australia, Brett Emerton, CC, 83
+Australia, Tim Cahill, TRQ, 86
+Australia, Harry Kewell, ATT, 84
+Australia, Joshua Kennedy, ATT, 82
+
+Serbia, Vladimir Stojković, POR, 84
+Serbia, Branislav Ivanović, TD, 86
+Serbia, Nemanja Vidić, DC, 89
+Serbia, Neven Subotić, DC, 85
+Serbia, Aleksandar Kolarov, TS, 85
+Serbia, Dejan Stanković, CC, 87
+Serbia, Nenad Milijaš, CC, 83
+Serbia, Miloš Krasić, CC, 86
+Serbia, Milan Jovanović, ATT, 84
+Serbia, Nikola Žigić, ATT, 83
+Serbia, Marko Pantelić, ATT, 83
+
+Slovenia, Samir Handanović, POR, 86
+Slovenia, Mišo Brečko, TD, 82
+Slovenia, Marko Šuler, DC, 81
+Slovenia, Boštjan Cesar, DC, 82
+Slovenia, Bojan Jokić, TS, 81
+Slovenia, Aleksandar Radosavljević, CC, 80
+Slovenia, Robert Koren, CC, 82
+Slovenia, Valter Birsa, TRQ, 83
+Slovenia, Andraž Kirm, CC, 81
+Slovenia, Zlatko Dedić, ATT, 81
+Slovenia, Milivoje Novaković, ATT, 83
+
+Slovacchia, Ján Mucha, POR, 83
+Slovacchia, Peter Pekarík, TD, 82
+Slovacchia, Martin Škrtel, DC, 86
+Slovacchia, Ján Ďurica, DC, 83
+Slovacchia, Radoslav Zabavník, TS, 81
+Slovacchia, Zdeno Štrba, CC, 81
+Slovacchia, Juraj Kucka, CC, 82
+Slovacchia, Marek Hamšík, TRQ, 86
+Slovacchia, Vladimír Weiss, TRQ, 82
+Slovacchia, Róbert Vittek, ATT, 84
+Slovacchia, Stanislav Šesták, ATT, 83
+
+Nuova Zelanda, Mark Paston, POR, 78
+Nuova Zelanda, Leo Bertos, TD, 77
+Nuova Zelanda, Winston Reid, DC, 80
+Nuova Zelanda, Ryan Nelsen, DC, 82
+Nuova Zelanda, Tommy Smith, DC, 78
+Nuova Zelanda, Tony Lochhead, TS, 77
+Nuova Zelanda, Simon Elliott, CC, 78
+Nuova Zelanda, Ivan Vicelich, CC, 77
+Nuova Zelanda, Shane Smeltz, ATT, 80
+Nuova Zelanda, Chris Killen, ATT, 79
+Nuova Zelanda, Rory Fallon, ATT, 78
+
+Corea del Nord, Ri Myong-guk, POR, 75
+Corea del Nord, Cha Jong-hyok, TD, 73
+Corea del Nord, Pak Chol-jin, DC, 74
+Corea del Nord, Ri Jun-il, DC, 73
+Corea del Nord, Ji Yun-nam, TS, 75
+Corea del Nord, Mun In-guk, CC, 74
+Corea del Nord, Ahn Young-hak, CC, 76
+Corea del Nord, Pak Nam-chol, CC, 74
+Corea del Nord, Hong Yong-jo, TRQ, 76
+Corea del Nord, Jong Tae-se, ATT, 79
+Corea del Nord, Choe Kum-chol, ATT, 74
+
+Camerun, Hamidou Souleymanou, POR, 82
+Camerun, Stéphane Mbia, TD, 84
+Camerun, Nicolas N'Koulou, DC, 83
+Camerun, Sébastien Bassong, DC, 83
+Camerun, Benoît Assou-Ekotto, TS, 84
+Camerun, Jean Makoun, CC, 84
+Camerun, Alex Song, CC, 85
+Camerun, Eyong Enoh, CC, 82
+Camerun, Achille Emana, TRQ, 83
+Camerun, Samuel Eto'o, ATT, 89
+Camerun, Pierre Webó, ATT, 83
+
+Algeria, Raïs M'Bolhi, POR, 82
+Algeria, Foued Kadir, TD, 80
+Algeria, Madjid Bougherra, DC, 84
+Algeria, Rafik Halliche, DC, 82
+Algeria, Antar Yahia, DC, 83
+Algeria, Nadir Belhadj, TS, 83
+Algeria, Medhi Lacen, CC, 81
+Algeria, Hassan Yebda, CC, 82
+Algeria, Karim Ziani, TRQ, 83
+Algeria, Karim Matmour, ATT, 81
+Algeria, Rafik Djebbour, ATT, 80
+
+Honduras, Noel Valladares, POR, 81
+Honduras, Sergio Mendoza, TD, 79
+Honduras, Osman Chávez, DC, 80
+Honduras, Maynor Figueroa, DC, 82
+Honduras, Emilio Izaguirre, TS, 81
+Honduras, Wilson Palacios, CC, 83
+Honduras, Amado Guevara, CC, 80
+Honduras, Hendry Thomas, CC, 80
+Honduras, Edgard Álvarez, CC, 81
+Honduras, Julio César de León, TRQ, 82
+Honduras, David Suazo, ATT, 83

@@ -1,0 +1,289 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Argentina, Nery Pumpido, POR, 86
+Argentina, José Luis Brown, DC, 85
+Argentina, Oscar Ruggeri, DC, 88
+Argentina, José Cuciuffo, DC, 84
+Argentina, Ricardo Giusti, TD, 85
+Argentina, Julio Olarticoechea, TS, 84
+Argentina, Sergio Batista, CC, 86
+Argentina, Héctor Enrique, CC, 85
+Argentina, Jorge Burruchaga, TRQ, 89
+Argentina, Diego Maradona, TRQ, 98
+Argentina, Jorge Valdano, ATT, 90
+
+Germania Ovest, Harald Schumacher, POR, 91
+Germania Ovest, Thomas Berthold, TD, 86
+Germania Ovest, Karlheinz Förster, DC, 88
+Germania Ovest, Ditmar Jakobs, DC, 85
+Germania Ovest, Hans-Peter Briegel, TS, 89
+Germania Ovest, Lothar Matthäus, CC, 92
+Germania Ovest, Norbert Eder, CC, 84
+Germania Ovest, Andreas Brehme, CC, 88
+Germania Ovest, Felix Magath, TRQ, 88
+Germania Ovest, Karl-Heinz Rummenigge, ATT, 92
+Germania Ovest, Klaus Allofs, ATT, 88
+
+Francia, Joël Bats, POR, 88
+Francia, Manuel Amoros, TD, 89
+Francia, Maxime Bossis, DC, 88
+Francia, Patrick Battiston, DC, 87
+Francia, Thierry Tusseau, TS, 85
+Francia, Luis Fernández, CC, 88
+Francia, Jean Tigana, CC, 91
+Francia, Alain Giresse, CC, 90
+Francia, Michel Platini, TRQ, 96
+Francia, Dominique Rocheteau, ATT, 87
+Francia, Jean-Pierre Papin, ATT, 86
+
+Belgio, Jean-Marie Pfaff, POR, 90
+Belgio, Eric Gerets, TD, 88
+Belgio, Georges Grün, DC, 86
+Belgio, Stéphane Demol, DC, 84
+Belgio, Patrick Vervoort, TS, 83
+Belgio, Franky Vercauteren, CC, 86
+Belgio, René Vandereycken, CC, 85
+Belgio, Enzo Scifo, TRQ, 90
+Belgio, Jan Ceulemans, TRQ, 89
+Belgio, Nico Claesen, ATT, 85
+Belgio, Daniel Veyt, ATT, 83
+
+Brasile, Carlos, POR, 86
+Brasile, Josimar, TD, 86
+Brasile, Júlio César, DC, 88
+Brasile, Edinho, DC, 87
+Brasile, Branco, TS, 86
+Brasile, Alemão, CC, 87
+Brasile, Júnior, CC, 89
+Brasile, Sócrates, TRQ, 92
+Brasile, Zico, TRQ, 94
+Brasile, Müller, ATT, 86
+Brasile, Careca, ATT, 91
+
+Inghilterra, Peter Shilton, POR, 90
+Inghilterra, Gary Stevens, TD, 85
+Inghilterra, Terry Fenwick, DC, 84
+Inghilterra, Terry Butcher, DC, 87
+Inghilterra, Kenny Sansom, TS, 86
+Inghilterra, Trevor Steven, ED, 85
+Inghilterra, Glenn Hoddle, CC, 88
+Inghilterra, Bryan Robson, CC, 89
+Inghilterra, Steve Hodge, CC, 84
+Inghilterra, Peter Beardsley, ATT, 87
+Inghilterra, Gary Lineker, ATT, 92
+
+Spagna, Andoni Zubizarreta, POR, 87
+Spagna, Tomás Reñones, TD, 85
+Spagna, Andoni Goikoetxea, DC, 87
+Spagna, Chendo, DC, 86
+Spagna, Julio Alberto, TS, 85
+Spagna, Víctor Muñoz, CC, 86
+Spagna, Ricardo Gallego, CC, 85
+Spagna, Míchel, ED, 88
+Spagna, Ramón Calderé, CC, 84
+Spagna, Emilio Butragueño, ATT, 90
+Spagna, Julio Salinas, ATT, 86
+
+Messico, Pablo Larios, POR, 85
+Messico, Mario Trejo, TD, 84
+Messico, Fernando Quirarte, DC, 86
+Messico, Félix Cruz, DC, 84
+Messico, Raúl Servín, TS, 83
+Messico, Miguel España, CC, 84
+Messico, Carlos Muñoz, CC, 83
+Messico, Tomás Boy, TRQ, 87
+Messico, Manuel Negrete, TRQ, 86
+Messico, Javier Aguirre, ATT, 84
+Messico, Hugo Sánchez, ATT, 92
+
+Italia, Giovanni Galli, POR, 86
+Italia, Giuseppe Bergomi, TD, 89
+Italia, Gaetano Scirea, DC, 91
+Italia, Pietro Vierchowod, DC, 88
+Italia, Antonio Cabrini, TS, 88
+Italia, Salvatore Bagni, CC, 86
+Italia, Fernando De Napoli, CC, 85
+Italia, Antonio Di Gennaro, CC, 84
+Italia, Bruno Conti, TRQ, 87
+Italia, Alessandro Altobelli, ATT, 89
+Italia, Gianluca Vialli, ATT, 86
+
+URSS, Rinat Dasaev, POR, 91
+URSS, Volodymyr Bezsonov, TD, 86
+URSS, Oleh Kuznetsov, DC, 87
+URSS, Andriy Bal, DC, 85
+URSS, Anatoliy Demyanenko, TS, 87
+URSS, Vasyl Rats, CC, 86
+URSS, Pavlo Yakovenko, CC, 85
+URSS, Ivan Yaremchuk, CC, 84
+URSS, Aleksandr Zavarov, TRQ, 88
+URSS, Oleh Blokhin, ATT, 88
+URSS, Ihor Belanov, ATT, 90
+
+Danimarca, Troels Rasmussen, POR, 83
+Danimarca, John Sivebæk, TD, 84
+Danimarca, Morten Olsen, DC, 88
+Danimarca, Ivan Nielsen, DC, 85
+Danimarca, Henrik Andersen, TS, 85
+Danimarca, Jens Jørn Bertelsen, CC, 84
+Danimarca, Søren Lerby, CC, 87
+Danimarca, Frank Arnesen, TRQ, 88
+Danimarca, Michael Laudrup, TRQ, 91
+Danimarca, Jesper Olsen, ATT, 86
+Danimarca, Preben Elkjær, ATT, 90
+
+Uruguay, Fernando Álvez, POR, 85
+Uruguay, Víctor Diogo, TD, 84
+Uruguay, Nelson Gutiérrez, DC, 86
+Uruguay, Eduardo Acevedo, DC, 85
+Uruguay, José Batista, TS, 83
+Uruguay, Miguel Bossio, CC, 84
+Uruguay, Jorge Barrios, CC, 84
+Uruguay, Sergio Santín, CC, 83
+Uruguay, Enzo Francescoli, TRQ, 90
+Uruguay, Antonio Alzamendi, ATT, 86
+Uruguay, Jorge da Silva, ATT, 85
+
+Paraguay, Roberto Fernández, POR, 85
+Paraguay, Juan Torales, TD, 83
+Paraguay, César Zabala, DC, 84
+Paraguay, Rogelio Delgado, DC, 85
+Paraguay, Vladimiro Schettina, TS, 82
+Paraguay, Jorge Amado Nunes, CC, 84
+Paraguay, Adolfino Cañete, CC, 83
+Paraguay, Buenaventura Ferreira, CC, 82
+Paraguay, Julio César Romero, TRQ, 88
+Paraguay, Roberto Cabañas, ATT, 86
+Paraguay, Ramón Hicks, ATT, 84
+
+Polonia, Józef Młynarczyk, POR, 86
+Polonia, Krzysztof Pawlak, TD, 83
+Polonia, Stefan Majewski, DC, 85
+Polonia, Roman Wójcicki, DC, 84
+Polonia, Marek Ostrowski, TS, 83
+Polonia, Waldemar Matysik, CC, 84
+Polonia, Ryszard Tarasiewicz, CC, 85
+Polonia, Zbigniew Boniek, TRQ, 89
+Polonia, Jan Urban, TRQ, 84
+Polonia, Włodzimierz Smolarek, ATT, 87
+Polonia, Dariusz Dziekanowski, ATT, 85
+
+Bulgaria, Borislav Mihaylov, POR, 85
+Bulgaria, Radoslav Zdravkov, TD, 83
+Bulgaria, Nikolay Arabov, DC, 84
+Bulgaria, Aleksandar Markov, DC, 83
+Bulgaria, Georgi Dimitrov, DC, 85
+Bulgaria, Andrey Zhelyazkov, CC, 84
+Bulgaria, Ayan Sadakov, CC, 83
+Bulgaria, Plamen Getov, TRQ, 84
+Bulgaria, Nasko Sirakov, TRQ, 86
+Bulgaria, Stoycho Mladenov, ATT, 85
+Bulgaria, Boycho Velichkov, ATT, 83
+
+Marocco, Badou Zaki, POR, 86
+Marocco, Labid Khalifa, TD, 83
+Marocco, Mustafa El Biyaz, DC, 84
+Marocco, Noureddine Bouyahyaoui, DC, 83
+Marocco, Abdelmajid Lamriss, TS, 82
+Marocco, Abdelmajid Dolmy, CC, 85
+Marocco, Mustafa El Haddaoui, CC, 84
+Marocco, Aziz Bouderbala, TRQ, 86
+Marocco, Mohammed Timoumi, TRQ, 87
+Marocco, Merry Krimau, ATT, 85
+Marocco, Abderrazak Khairi, ATT, 84
+
+Scozia, Jim Leighton, POR, 86
+Scozia, Richard Gough, TD, 85
+Scozia, Alex McLeish, DC, 86
+Scozia, Willie Miller, DC, 87
+Scozia, Maurice Malpas, TS, 84
+Scozia, Roy Aitken, CC, 85
+Scozia, Graeme Souness, CC, 88
+Scozia, Gordon Strachan, TRQ, 87
+Scozia, Eamonn Bannon, CC, 83
+Scozia, Paul Sturrock, ATT, 84
+Scozia, Graeme Sharp, ATT, 85
+
+Corea del Sud, Oh Yeon-kyo, POR, 81
+Corea del Sud, Park Kyung-hoon, TD, 82
+Corea del Sud, Chung Yong-hwan, DC, 83
+Corea del Sud, Cho Young-jeung, DC, 82
+Corea del Sud, Huh Jung-moo, CC, 84
+Corea del Sud, Cho Kwang-rae, CC, 82
+Corea del Sud, Park Chang-sun, CC, 83
+Corea del Sud, Kim Joo-sung, TRQ, 85
+Corea del Sud, Choi Soon-ho, ATT, 84
+Corea del Sud, Cha Bum-kun, ATT, 88
+Corea del Sud, Byun Byung-joo, ATT, 82
+
+Portogallo, Vítor Damas, POR, 85
+Portogallo, António Veloso, TD, 84
+Portogallo, Frederico, DC, 85
+Portogallo, João Pinto, DC, 86
+Portogallo, Álvaro, TS, 84
+Portogallo, António Sousa, CC, 85
+Portogallo, Carlos Manuel, CC, 86
+Portogallo, Jaime Pacheco, CC, 85
+Portogallo, Diamantino, TRQ, 84
+Portogallo, Paulo Futre, ATT, 88
+Portogallo, Fernando Gomes, ATT, 87
+
+Ungheria, Péter Disztl, POR, 84
+Ungheria, Sándor Sallai, TD, 83
+Ungheria, Antal Róth, DC, 84
+Ungheria, József Kardos, DC, 83
+Ungheria, Zoltán Péter, TS, 82
+Ungheria, Antal Nagy, CC, 84
+Ungheria, György Bognár, CC, 83
+Ungheria, Lajos Détári, TRQ, 87
+Ungheria, Márton Esterházy, ATT, 84
+Ungheria, József Kiprich, ATT, 85
+Ungheria, Kálmán Kovács, ATT, 83
+
+Irlanda del Nord, Pat Jennings, POR, 86
+Irlanda del Nord, Jimmy Nicholl, TD, 83
+Irlanda del Nord, John O'Neill, DC, 84
+Irlanda del Nord, Alan McDonald, DC, 83
+Irlanda del Nord, Mal Donaghy, TS, 84
+Irlanda del Nord, David McCreery, CC, 83
+Irlanda del Nord, Sammy McIlroy, CC, 84
+Irlanda del Nord, Nigel Worthington, CC, 83
+Irlanda del Nord, Norman Whiteside, TRQ, 86
+Irlanda del Nord, Colin Clarke, ATT, 84
+Irlanda del Nord, Billy Hamilton, ATT, 83
+
+Algeria, Larbi El Hadi, POR, 83
+Algeria, Faouzi Mansouri, TS, 82
+Algeria, Mahmoud Guendouz, DC, 84
+Algeria, Noureddine Kourichi, DC, 83
+Algeria, Mohammed Kaci Said, CC, 83
+Algeria, Ali Fergani, CC, 84
+Algeria, Lakhdar Belloumi, TRQ, 87
+Algeria, Djamel Zidane, TRQ, 84
+Algeria, Tedj Bensaoula, ATT, 83
+Algeria, Rabah Madjer, ATT, 88
+Algeria, Salah Assad, ATT, 85
+
+Canada, Paul Dolan, POR, 78
+Canada, Bob Lenarduzzi, TD, 80
+Canada, Ian Bridge, DC, 79
+Canada, Randy Samuel, DC, 79
+Canada, Bruce Wilson, TS, 80
+Canada, Mike Sweeney, CC, 78
+Canada, David Norman, CC, 77
+Canada, Gerry Gray, CC, 78
+Canada, Paul James, CC, 77
+Canada, Carl Valentine, ATT, 79
+Canada, Igor Vrablic, ATT, 77
+
+Iraq, Raad Hammoudi, POR, 79
+Iraq, Khalil Allawi, TD, 78
+Iraq, Samir Shaker, DC, 79
+Iraq, Nadhim Shaker, DC, 78
+Iraq, Ghanim Oraibi, TS, 77
+Iraq, Ali Hussein Shihab, CC, 78
+Iraq, Haris Mohammed, CC, 77
+Iraq, Basil Gorgis, CC, 79
+Iraq, Natiq Hashim, CC, 78
+Iraq, Hussein Saeed, ATT, 81
+Iraq, Ahmed Radhi, ATT, 80

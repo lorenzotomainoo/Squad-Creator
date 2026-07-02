@@ -1,0 +1,385 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Argentina, Franco Armani, POR, 88
+Argentina, Gabriel Mercado, TD, 87
+Argentina, Nicolás Otamendi, DC, 89
+Argentina, Marcos Rojo, DC, 87
+Argentina, Nicolás Tagliafico, TS, 88
+Argentina, Javier Mascherano, CC, 90
+Argentina, Éver Banega, CC, 88
+Argentina, Ángel Di María, TRQ, 91
+Argentina, Lionel Messi, ATT, 95
+Argentina, Sergio Agüero, ATT, 92
+Argentina, Gonzalo Higuaín, ATT, 89
+
+Spagna, David de Gea, POR, 91
+Spagna, Dani Carvajal, TD, 89
+Spagna, Sergio Ramos, DC, 92
+Spagna, Gerard Piqué, DC, 90
+Spagna, Jordi Alba, TS, 89
+Spagna, Sergio Busquets, CC, 91
+Spagna, Andrés Iniesta, CC, 92
+Spagna, Thiago Alcântara, CC, 88
+Spagna, Isco, TRQ, 90
+Spagna, Diego Costa, ATT, 90
+Spagna, Marco Asensio, ATT, 88
+
+Germania, Manuel Neuer, POR, 92
+Germania, Joshua Kimmich, TD, 90
+Germania, Mats Hummels, DC, 91
+Germania, Jérôme Boateng, DC, 89
+Germania, Jonas Hector, TS, 87
+Germania, Toni Kroos, CC, 92
+Germania, Sami Khedira, CC, 88
+Germania, Mesut Özil, TRQ, 89
+Germania, Thomas Müller, ATT, 91
+Germania, Timo Werner, ATT, 89
+Germania, Marco Reus, ATT, 90
+
+Francia, Hugo Lloris, POR, 91
+Francia, Benjamin Pavard, TD, 88
+Francia, Raphaël Varane, DC, 91
+Francia, Samuel Umtiti, DC, 89
+Francia, Lucas Hernández, TS, 88
+Francia, N’Golo Kanté, CC, 92
+Francia, Paul Pogba, CC, 91
+Francia, Blaise Matuidi, CC, 88
+Francia, Antoine Griezmann, TRQ, 92
+Francia, Kylian Mbappé, ATT, 94
+Francia, Olivier Giroud, ATT, 89
+
+Brasile, Alisson, POR, 91
+Brasile, Dani Alves, TD, 89
+Brasile, Thiago Silva, DC, 91
+Brasile, Miranda, DC, 88
+Brasile, Marcelo, TS, 90
+Brasile, Casemiro, CC, 90
+Brasile, Paulinho, CC, 88
+Brasile, Philippe Coutinho, TRQ, 92
+Brasile, Neymar, ATT, 94
+Brasile, Gabriel Jesus, ATT, 89
+Brasile, Willian, CC, 88
+
+Belgio, Thibaut Courtois, POR, 92
+Belgio, Toby Alderweireld, DC, 89
+Belgio, Jan Vertonghen, DC, 90
+Belgio, Thomas Meunier, TD, 88
+Belgio, Axel Witsel, CC, 89
+Belgio, Kevin De Bruyne, CC, 94
+Belgio, Marouane Fellaini, CC, 88
+Belgio, Eden Hazard, ATT, 93
+Belgio, Dries Mertens, TRQ, 90
+Belgio, Romelu Lukaku, ATT, 92
+Belgio, Yannick Carrasco, CC, 88
+
+Croazia, Danijel Subašić, POR, 88
+Croazia, Sime Vrsaljko, TD, 87
+Croazia, Dejan Lovren, DC, 88
+Croazia, Domagoj Vida, DC, 87
+Croazia, Ivan Strinić, TS, 86
+Croazia, Luka Modrić, CC, 94
+Croazia, Ivan Rakitić, CC, 91
+Croazia, Marcelo Brozović, CC, 89
+Croazia, Ivan Perišić, TRQ, 91
+Croazia, Mario Mandžukić, ATT, 90
+Croazia, Andrej Kramarić, ATT, 88
+
+Portogallo, Rui Patrício, POR, 90
+Portogallo, Cédric Soares, TD, 87
+Portogallo, Pepe, DC, 90
+Portogallo, José Fonte, DC, 86
+Portogallo, Raphaël Guerreiro, TS, 88
+Portogallo, William Carvalho, CC, 89
+Portogallo, João Moutinho, CC, 88
+Portogallo, Bernardo Silva, TRQ, 91
+Portogallo, Cristiano Ronaldo, ATT, 95
+Portogallo, Gonçalo Guedes, ATT, 88
+Portogallo, André Silva, ATT, 87
+
+Messico, Guillermo Ochoa, POR, 90
+Messico, Edson Álvarez, DC, 87
+Messico, Héctor Moreno, DC, 88
+Messico, Carlos Salcedo, DC, 87
+Messico, Miguel Layún, TD, 87
+Messico, Andrés Guardado, CC, 89
+Messico, Héctor Herrera, CC, 90
+Messico, Marco Fabián, TRQ, 88
+Messico, Hirving Lozano, ATT, 91
+Messico, Javier Hernández, ATT, 90
+Messico, Carlos Vela, ATT, 91
+
+Svizzera, Yann Sommer, POR, 89
+Svizzera, Stephan Lichtsteiner, TD, 88
+Svizzera, Manuel Akanji, DC, 88
+Svizzera, Fabian Schär, DC, 88
+Svizzera, Ricardo Rodríguez, TS, 88
+Svizzera, Granit Xhaka, CC, 90
+Svizzera, Xherdan Shaqiri, TRQ, 90
+Svizzera, Blerim Džemaili, CC, 87
+Svizzera, Steven Zuber, CC, 87
+Svizzera, Haris Seferović, ATT, 88
+Svizzera, Josip Drmić, ATT, 87
+
+Colombia, David Ospina, POR, 89
+Colombia, Santiago Arias, TD, 88
+Colombia, Davinson Sánchez, DC, 89
+Colombia, Yerry Mina, DC, 88
+Colombia, Johan Mojica, TS, 87
+Colombia, Carlos Sánchez, CC, 88
+Colombia, Wilmar Barrios, CC, 88
+Colombia, James Rodríguez, TRQ, 93
+Colombia, Juan Quintero, TRQ, 88
+Colombia, Radamel Falcao, ATT, 91
+Colombia, Luis Muriel, ATT, 89
+
+Giappone, Eiji Kawashima, POR, 88
+Giappone, Hiroki Sakai, TD, 88
+Giappone, Maya Yoshida, DC, 88
+Giappone, Tomoaki Makino, DC, 86
+Giappone, Yuto Nagatomo, TS, 88
+Giappone, Makoto Hasebe, CC, 89
+Giappone, Shinji Kagawa, CC, 90
+Giappone, Takashi Inui, TRQ, 88
+Giappone, Keisuke Honda, TRQ, 89
+Giappone, Yuya Osako, ATT, 88
+Giappone, Genki Haraguchi, ATT, 87
+
+Svezia, Robin Olsen, POR, 88
+Svezia, Mikael Lustig, TD, 87
+Svezia, Andreas Granqvist, DC, 89
+Svezia, Victor Lindelöf, DC, 88
+Svezia, Ludwig Augustinsson, TS, 87
+Svezia, Sebastian Larsson, CC, 88
+Svezia, Emil Forsberg, CC, 90
+Svezia, Albin Ekdal, CC, 88
+Svezia, Marcus Berg, ATT, 89
+Svezia, Ola Toivonen, ATT, 88
+Svezia, Isaac Kiese Thelin, ATT, 87
+
+Serbia, Vladimir Stojković, POR, 88
+Serbia, Antonio Rukavina, TD, 87
+Serbia, Branislav Ivanović, DC, 89
+Serbia, Nikola Milenković, DC, 88
+Serbia, Aleksandar Kolarov, TS, 90
+Serbia, Nemanja Matić, CC, 90
+Serbia, Sergej Milinković-Savić, CC, 91
+Serbia, Dušan Tadić, TRQ, 90
+Serbia, Adem Ljajić, TRQ, 88
+Serbia, Aleksandar Mitrović, ATT, 90
+Serbia, Luka Jović, ATT, 89
+
+Russia, Igor Akinfeev, POR, 88
+Russia, Mario Fernandes, TD, 88
+Russia, Sergei Ignashevich, DC, 87
+Russia, Ilya Kutepov, DC, 86
+Russia, Yuri Zhirkov, TS, 87
+Russia, Aleksandr Golovin, CC, 90
+Russia, Roman Zobnin, CC, 87
+Russia, Denis Cheryshev, TRQ, 89
+Russia, Alan Dzagoev, CC, 88
+Russia, Artem Dzyuba, ATT, 90
+Russia, Fyodor Smolov, ATT, 88
+
+Arabia Saudita, Abdullah Al-Mayouf, POR, 88
+Arabia Saudita, Mohammed Al-Breik, TD, 87
+Arabia Saudita, Osama Hawsawi, DC, 87
+Arabia Saudita, Omar Hawsawi, DC, 86
+Arabia Saudita, Yasser Al-Shahrani, TS, 87
+Arabia Saudita, Salman Al-Faraj, CC, 88
+Arabia Saudita, Abdullah Otayf, CC, 86
+Arabia Saudita, Taisir Al-Jassim, TRQ, 87
+Arabia Saudita, Salem Al-Dawsari, ATT, 89
+Arabia Saudita, Fahad Al-Muwallad, ATT, 88
+Arabia Saudita, Mohammad Al-Sahlawi, ATT, 87
+
+Egitto, Essam El-Hadary, POR, 88
+Egitto, Ahmed Fathi, TD, 88
+Egitto, Ali Gabr, DC, 87
+Egitto, Ahmed Hegazi, DC, 88
+Egitto, Mohamed Abdel Shafy, TS, 87
+Egitto, Tarek Hamed, CC, 88
+Egitto, Mohamed Elneny, CC, 88
+Egitto, Abdallah Said, TRQ, 89
+Egitto, Mohamed Salah, ATT, 94
+Egitto, Ramadan Sobhi, ATT, 88
+Egitto, Marwan Mohsen, ATT, 87
+
+Perù, Pedro Gallese, POR, 88
+Perù, Luis Advíncula, TD, 88
+Perù, Alberto Rodríguez, DC, 87
+Perù, Christian Ramos, DC, 87
+Perù, Miguel Trauco, TS, 88
+Perù, Renato Tapia, CC, 88
+Perù, Yoshimar Yotún, CC, 88
+Perù, Christian Cueva, TRQ, 90
+Perù, André Carrillo, ATT, 89
+Perù, Paolo Guerrero, ATT, 91
+Perù, Edison Flores, ATT, 88
+
+Australia, Mathew Ryan, POR, 89
+Australia, Josh Risdon, TD, 87
+Australia, Trent Sainsbury, DC, 88
+Australia, Mark Milligan, DC, 87
+Australia, Aziz Behich, TS, 87
+Australia, Mile Jedinak, CC, 89
+Australia, Aaron Mooy, CC, 90
+Australia, Tom Rogić, TRQ, 88
+Australia, Robbie Kruse, ATT, 88
+Australia, Tim Cahill, ATT, 89
+Australia, Andrew Nabbout, ATT, 87
+
+Panama, Jaime Penedo, POR, 88
+Panama, Michael Murillo, TD, 87
+Panama, Román Torres, DC, 88
+Panama, Harold Cummings, DC, 86
+Panama, Fidel Escobar, DC, 86
+Panama, Aníbal Godoy, CC, 88
+Panama, Gabriel Gómez, CC, 87
+Panama, Armando Cooper, TRQ, 88
+Panama, Blas Pérez, ATT, 88
+Panama, Gabriel Torres, ATT, 88
+Panama, Luis Tejada, ATT, 87
+
+Tunisia, Mouez Hassen, POR, 88
+Tunisia, Dylan Bronn, DC, 88
+Tunisia, Yassine Meriah, DC, 87
+Tunisia, Syam Ben Youssef, DC, 86
+Tunisia, Oussama Haddadi, TS, 87
+Tunisia, Ellyes Skhiri, CC, 89
+Tunisia, Ferjani Sassi, CC, 88
+Tunisia, Wahbi Khazri, TRQ, 90
+Tunisia, Anice Badri, ATT, 88
+Tunisia, Naim Sliti, ATT, 88
+Tunisia, Fakhreddine Ben Youssef, ATT, 87
+
+Costa Rica, Keylor Navas, POR, 91
+Costa Rica, Cristian Gamboa, TD, 87
+Costa Rica, Giancarlo González, DC, 88
+Costa Rica, Johnny Acosta, DC, 87
+Costa Rica, Bryan Oviedo, TS, 87
+Costa Rica, Celso Borges, CC, 88
+Costa Rica, Yeltsin Tejeda, CC, 87
+Costa Rica, Bryan Ruiz, TRQ, 90
+Costa Rica, Joel Campbell, ATT, 89
+Costa Rica, Marco Ureña, ATT, 88
+Costa Rica, Johan Venegas, ATT, 87
+
+Islanda, Hannes Halldórsson, POR, 88
+Islanda, Birkir Már Sævarsson, TD, 87
+Islanda, Ragnar Sigurðsson, DC, 88
+Islanda, Kári Árnason, DC, 87
+Islanda, Ari Skúlason, TS, 86
+Islanda, Gylfi Sigurðsson, CC, 91
+Islanda, Jóhann Berg Guðmundsson, CC, 89
+Islanda, Birkir Bjarnason, CC, 88
+Islanda, Alfred Finnbogason, ATT, 89
+Islanda, Kolbeinn Sigþórsson, ATT, 88
+Islanda, Aron Gunnarsson, CC, 89
+
+Nigeria, Francis Uzoho, POR, 88
+Nigeria, Shehu Abdullahi, TD, 87
+Nigeria, Leon Balogun, DC, 88
+Nigeria, William Troost-Ekong, DC, 88
+Nigeria, Brian Idowu, TS, 87
+Nigeria, John Obi Mikel, CC, 90
+Nigeria, Ogenyi Onazi, CC, 88
+Nigeria, Alex Iwobi, TRQ, 89
+Nigeria, Victor Moses, ATT, 89
+Nigeria, Ahmed Musa, ATT, 90
+Nigeria, Kelechi Iheanacho, ATT, 89
+
+Corea del Sud, Kim Seung-gyu, POR, 88
+Corea del Sud, Lee Yong, TD, 87
+Corea del Sud, Kim Young-gwon, DC, 88
+Corea del Sud, Jang Hyun-soo, DC, 87
+Corea del Sud, Yoon Young-sun, TS, 86
+Corea del Sud, Ki Sung-yueng, CC, 89
+Corea del Sud, Jung Woo-young, CC, 88
+Corea del Sud, Son Heung-min, ATT, 94
+Corea del Sud, Koo Ja-cheol, CC, 88
+Corea del Sud, Lee Jae-sung, TRQ, 88
+Corea del Sud, Hwang Hee-chan, ATT, 89
+
+Uruguay, Fernando Muslera, POR, 86
+Uruguay, Martín Cáceres, TD, 82
+Uruguay, Diego Godín, DC, 90
+Uruguay, José Giménez, DC, 86
+Uruguay, Diego Laxalt, TS, 80
+Uruguay, Matías Vecino, CC, 82
+Uruguay, Lucas Torreira, CC, 83
+Uruguay, Rodrigo Bentancur, CC, 81
+Uruguay, Nahitan Nández, TRQ, 80
+Uruguay, Luis Suárez, ATT, 91
+Uruguay, Edinson Cavani, ATT, 89
+
+Iran, Alireza Beiranvand, POR, 78
+Iran, Ramin Rezaeian, TD, 76
+Iran, Morteza Pouraliganji, DC, 77
+Iran, Majid Hosseini, DC, 75
+Iran, Ehsan Hajsafi, TS, 76
+Iran, Omid Ebrahimi, CC, 77
+Iran, Saeid Ezatolahi, CC, 75
+Iran, Vahid Amiri, TRQ, 76
+Iran, Alireza Jahanbakhsh, ATT, 78
+Iran, Mehdi Taremi, ATT, 78
+Iran, Sardar Azmoun, ATT, 80
+
+Marocco, Munir Mohamedi, POR, 78
+Marocco, Nabil Dirar, TD, 78
+Marocco, Medhi Benatia, DC, 85
+Marocco, Romain Saïss, DC, 80
+Marocco, Achraf Hakimi, TS, 80
+Marocco, Karim El Ahmadi, CC, 80
+Marocco, Mbark Boussoufa, CC, 79
+Marocco, Younès Belhanda, TRQ, 81
+Marocco, Hakim Ziyech, ATT, 83
+Marocco, Nordin Amrabat, ATT, 80
+Marocco, Khalid Boutaïb, ATT, 76
+
+Danimarca, Kasper Schmeichel, POR, 85
+Danimarca, Henrik Dalsgaard, TD, 78
+Danimarca, Simon Kjær, DC, 83
+Danimarca, Andreas Christensen, DC, 83
+Danimarca, Jens Stryger Larsen, TS, 77
+Danimarca, Thomas Delaney, CC, 81
+Danimarca, Lasse Schöne, CC, 80
+Danimarca, Christian Eriksen, TRQ, 88
+Danimarca, Yussuf Poulsen, ATT, 81
+Danimarca, Martin Braithwaite, ATT, 78
+Danimarca, Nicolai Jørgensen, ATT, 79
+
+Inghilterra, Jordan Pickford, POR, 85
+Inghilterra, Kyle Walker, TD, 86
+Inghilterra, John Stones, DC, 85
+Inghilterra, Harry Maguire, DC, 84
+Inghilterra, Ashley Young, TS, 83
+Inghilterra, Jordan Henderson, CC, 84
+Inghilterra, Dele Alli, CC, 85
+Inghilterra, Jesse Lingard, TRQ, 83
+Inghilterra, Raheem Sterling, ATT, 87
+Inghilterra, Marcus Rashford, ATT, 84
+Inghilterra, Harry Kane, ATT, 90
+
+Polonia, Wojciech Szczęsny, POR, 87
+Polonia, Łukasz Piszczek, TD, 84
+Polonia, Kamil Glik, DC, 85
+Polonia, Michał Pazdan, DC, 78
+Polonia, Maciej Rybus, TS, 79
+Polonia, Grzegorz Krychowiak, CC, 82
+Polonia, Piotr Zieliński, CC, 83
+Polonia, Kamil Grosicki, TRQ, 80
+Polonia, Arkadiusz Milik, ATT, 82
+Polonia, Robert Lewandowski, ATT, 91
+Polonia, Dawid Kownacki, ATT, 75
+
+Senegal, Khadim N'Diaye, POR, 76
+Senegal, Moussa Wagué, TD, 75
+Senegal, Kalidou Koulibaly, DC, 88
+Senegal, Salif Sané, DC, 81
+Senegal, Youssouf Sabaly, TS, 78
+Senegal, Idrissa Gueye, CC, 84
+Senegal, Cheikhou Kouyaté, CC, 80
+Senegal, Badou Ndiaye, CC, 79
+Senegal, Ismaïla Sarr, TRQ, 80
+Senegal, Sadio Mané, ATT, 89
+Senegal, M'Baye Niang, ATT, 79

@@ -1,0 +1,193 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Argentina, Ubaldo Fillol, POR, 89
+Argentina, Jorge Olguín, TD, 85
+Argentina, Luis Galván, DC, 86
+Argentina, Daniel Passarella, DC, 92
+Argentina, Alberto Tarantini, TS, 87
+Argentina, Américo Gallego, CC, 86
+Argentina, Osvaldo Ardiles, CC, 88
+Argentina, Daniel Bertoni, ED, 85
+Argentina, Oscar Ortiz, ES, 84
+Argentina, Mario Kempes, ATT, 92
+Argentina, Leopoldo Luque, ATT, 87
+
+Paesi Bassi, Jan Jongbloed, POR, 84
+Paesi Bassi, Wim Suurbier, TD, 86
+Paesi Bassi, Ernie Brandts, DC, 84
+Paesi Bassi, Ruud Krol, DC, 91
+Paesi Bassi, Jan Poortvliet, TS, 83
+Paesi Bassi, Wim Jansen, CC, 86
+Paesi Bassi, Johan Neeskens, CC, 90
+Paesi Bassi, Arie Haan, CC, 87
+Paesi Bassi, Willy van de Kerkhof, CC, 86
+Paesi Bassi, René van de Kerkhof, ED, 86
+Paesi Bassi, Rob Rensenbrink, ATT, 91
+
+Brasile, Émerson Leão, POR, 88
+Brasile, Nelinho, TD, 87
+Brasile, Oscar, DC, 85
+Brasile, Amaral, DC, 84
+Brasile, Toninho, TS, 84
+Brasile, Toninho Cerezo, CC, 87
+Brasile, Batista, CC, 85
+Brasile, Dirceu, TRQ, 88
+Brasile, Rivelino, TRQ, 89
+Brasile, Zico, TRQ, 90
+Brasile, Roberto Dinamite, ATT, 87
+
+Italia, Dino Zoff, POR, 90
+Italia, Claudio Gentile, TD, 87
+Italia, Gaetano Scirea, DC, 92
+Italia, Mauro Bellugi, DC, 85
+Italia, Antonio Cabrini, TS, 87
+Italia, Marco Tardelli, CC, 88
+Italia, Romeo Benetti, CC, 86
+Italia, Giancarlo Antognoni, TRQ, 88
+Italia, Franco Causio, ED, 87
+Italia, Paolo Rossi, ATT, 89
+Italia, Roberto Bettega, ATT, 88
+
+Germania Ovest, Sepp Maier, POR, 89
+Germania Ovest, Berti Vogts, TD, 89
+Germania Ovest, Manfred Kaltz, DC, 88
+Germania Ovest, Rolf Rüssmann, DC, 85
+Germania Ovest, Bernard Dietz, TS, 86
+Germania Ovest, Rainer Bonhof, CC, 87
+Germania Ovest, Heinz Flohe, CC, 85
+Germania Ovest, Erich Beer, TRQ, 84
+Germania Ovest, Karl-Heinz Rummenigge, ATT, 90
+Germania Ovest, Klaus Fischer, ATT, 87
+Germania Ovest, Dieter Müller, ATT, 86
+
+Polonia, Jan Tomaszewski, POR, 86
+Polonia, Antoni Szymanowski, TD, 85
+Polonia, Władysław Żmuda, DC, 87
+Polonia, Jerzy Gorgoń, DC, 86
+Polonia, Henryk Maculewicz, TS, 83
+Polonia, Henryk Kasperczak, CC, 86
+Polonia, Kazimierz Deyna, TRQ, 89
+Polonia, Zbigniew Boniek, TRQ, 87
+Polonia, Grzegorz Lato, ED, 89
+Polonia, Andrzej Szarmach, ATT, 87
+Polonia, Włodzimierz Lubański, ATT, 85
+
+Austria, Friedrich Koncilia, POR, 85
+Austria, Robert Sara, TD, 86
+Austria, Erich Obermayer, DC, 84
+Austria, Bruno Pezzey, DC, 86
+Austria, Gerhard Breitenberger, TS, 82
+Austria, Herbert Prohaska, CC, 87
+Austria, Josef Hickersberger, CC, 83
+Austria, Eduard Krieger, CC, 84
+Austria, Wilhelm Kreuz, TRQ, 84
+Austria, Hans Krankl, ATT, 89
+Austria, Walter Schachner, ATT, 84
+
+Perù, Ramón Quiroga, POR, 84
+Perù, Jaime Duarte, TD, 83
+Perù, Rodolfo Manzo, DC, 81
+Perù, Héctor Chumpitaz, DC, 87
+Perù, Rubén Toribio Díaz, TS, 83
+Perù, José Velásquez, CC, 85
+Perù, César Cueto, CC, 86
+Perù, Teófilo Cubillas, TRQ, 90
+Perù, Juan José Muñante, ED, 84
+Perù, Juan Carlos Oblitas, ES, 85
+Perù, Guillermo La Rosa, ATT, 83
+
+Francia, Jean-Paul Bertrand-Demanes, POR, 82
+Francia, Patrick Battiston, TD, 85
+Francia, Marius Trésor, DC, 88
+Francia, Maxime Bossis, DC, 85
+Francia, Christian Lopez, TS, 83
+Francia, Henri Michel, CC, 86
+Francia, Dominique Bathenay, CC, 84
+Francia, Michel Platini, TRQ, 89
+Francia, Dominique Rocheteau, ED, 86
+Francia, Didier Six, ES, 84
+Francia, Bernard Lacombe, ATT, 85
+
+Spagna, Luis Arconada, POR, 87
+Spagna, Marcelino, TD, 83
+Spagna, Migueli, DC, 86
+Spagna, Antonio Olmo, DC, 82
+Spagna, Rafael Gordillo, TS, 84
+Spagna, Isidoro San José, CC, 83
+Spagna, Eugenio Leal, CC, 82
+Spagna, Juan Manuel Asensi, CC, 85
+Spagna, Juanito, ED, 86
+Spagna, Santillana, ATT, 87
+Spagna, Dani, ATT, 84
+
+Scozia, Alan Rough, POR, 82
+Scozia, Stuart Kennedy, TD, 83
+Scozia, Martin Buchan, DC, 85
+Scozia, Tom Forsyth, DC, 84
+Scozia, Willie Donachie, TS, 83
+Scozia, Bruce Rioch, CC, 84
+Scozia, Graeme Souness, CC, 87
+Scozia, Archie Gemmill, CC, 86
+Scozia, Kenny Dalglish, TRQ, 90
+Scozia, John Robertson, ES, 85
+Scozia, Joe Jordan, ATT, 86
+
+Svezia, Ronnie Hellström, POR, 88
+Svezia, Hasse Borg, TD, 82
+Svezia, Roy Andersson, DC, 82
+Svezia, Björn Nordqvist, DC, 84
+Svezia, Ingemar Erlandsson, TS, 81
+Svezia, Staffan Tapper, CC, 82
+Svezia, Anders Linderoth, CC, 83
+Svezia, Bo Larsson, CC, 84
+Svezia, Lennart Larsson, TRQ, 82
+Svezia, Thomas Sjöberg, ATT, 83
+Svezia, Ralf Edström, ATT, 84
+
+Ungheria, Sándor Gujdár, POR, 82
+Ungheria, Péter Török, TD, 81
+Ungheria, István Kocsis, DC, 82
+Ungheria, Zoltán Kereki, DC, 83
+Ungheria, József Tóth, TS, 82
+Ungheria, Sándor Zombori, CC, 83
+Ungheria, Károly Csapó, CC, 82
+Ungheria, Tibor Nyilasi, TRQ, 86
+Ungheria, László Fazekas, ED, 84
+Ungheria, Sándor Halmosi, ES, 81
+Ungheria, András Törőcsik, ATT, 85
+
+Messico, Pilar Reyes, POR, 79
+Messico, Jesús Martínez, TD, 79
+Messico, Eduardo Cisneros, DC, 79
+Messico, Alfredo Tena, DC, 81
+Messico, Arturo Vázquez Ayala, TS, 82
+Messico, Guillermo Mendizábal, CC, 80
+Messico, Antonio de la Torre, CC, 79
+Messico, Leonardo Cuéllar, CC, 81
+Messico, Cristóbal Ortega, ED, 80
+Messico, Víctor Rangel, ATT, 79
+Messico, Hugo Sánchez, ATT, 83
+
+Iran, Nasser Hejazi, POR, 82
+Iran, Hassan Nazari, TD, 80
+Iran, Andranik Eskandarian, DC, 81
+Iran, Nasrollah Abdollahi, DC, 79
+Iran, Jawad Allahwardi, TS, 78
+Iran, Ali Parvin, CC, 82
+Iran, Mohammad Sadeghi, CC, 80
+Iran, Ebrahim Ghasempour, CC, 79
+Iran, Hassan Roshan, ATT, 81
+Iran, Ghafour Jahani, ATT, 79
+Iran, Hossein Faraki, ATT, 78
+
+Tunisia, Mokhtar Naili, POR, 80
+Tunisia, Mokhtar Dhouib, TD, 79
+Tunisia, Mohsen Labidi, DC, 79
+Tunisia, Ridha El Louze, DC, 78
+Tunisia, Ali Kaabi, TS, 79
+Tunisia, Néjib Ghommidh, CC, 80
+Tunisia, Agrebi Ben Rehaiem, CC, 79
+Tunisia, Tarak Dhiab, TRQ, 83
+Tunisia, Temime Lahzami, ED, 81
+Tunisia, Mohamed Akid, ATT, 80
+Tunisia, Abderraouf Ben Aziza, ATT, 79

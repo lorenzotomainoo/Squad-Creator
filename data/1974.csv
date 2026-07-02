@@ -1,0 +1,193 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Germania Ovest, Sepp Maier, POR, 90
+Germania Ovest, Berti Vogts, TD, 89
+Germania Ovest, Franz Beckenbauer, DC, 95
+Germania Ovest, Hans-Georg Schwarzenbeck, DC, 86
+Germania Ovest, Paul Breitner, TS, 90
+Germania Ovest, Rainer Bonhof, CC, 86
+Germania Ovest, Uli Hoeneß, CC, 88
+Germania Ovest, Wolfgang Overath, TRQ, 89
+Germania Ovest, Jürgen Grabowski, ED, 86
+Germania Ovest, Bernd Hölzenbein, ES, 85
+Germania Ovest, Gerd Müller, ATT, 94
+
+Paesi Bassi, Jan Jongbloed, POR, 83
+Paesi Bassi, Wim Suurbier, TD, 87
+Paesi Bassi, Wim Rijsbergen, DC, 84
+Paesi Bassi, Arie Haan, DC, 88
+Paesi Bassi, Ruud Krol, TS, 91
+Paesi Bassi, Wim Jansen, CC, 86
+Paesi Bassi, Willem van Hanegem, CC, 89
+Paesi Bassi, Johan Neeskens, CC, 91
+Paesi Bassi, Johnny Rep, ED, 88
+Paesi Bassi, Rob Rensenbrink, ES, 91
+Paesi Bassi, Johan Cruyff, TRQ, 96
+
+Polonia, Jan Tomaszewski, POR, 87
+Polonia, Antoni Szymanowski, TD, 85
+Polonia, Jerzy Gorgoń, DC, 87
+Polonia, Władysław Żmuda, DC, 85
+Polonia, Adam Musiał, TS, 83
+Polonia, Henryk Kasperczak, CC, 85
+Polonia, Zygmunt Maszczyk, CC, 83
+Polonia, Kazimierz Deyna, TRQ, 90
+Polonia, Grzegorz Lato, ED, 90
+Polonia, Robert Gadocha, ES, 87
+Polonia, Andrzej Szarmach, ATT, 88
+
+Brasile, Émerson Leão, POR, 87
+Brasile, Zé Maria, TD, 86
+Brasile, Luís Pereira, DC, 88
+Brasile, Marinho Peres, DC, 85
+Brasile, Marinho Chagas, TS, 87
+Brasile, Wilson Piazza, CC, 86
+Brasile, Paulo César Carpegiani, CC, 85
+Brasile, Rivelino, TRQ, 91
+Brasile, Valdomiro, ED, 84
+Brasile, Dirceu, ES, 86
+Brasile, Jairzinho, ATT, 90
+
+Svezia, Ronnie Hellström, POR, 88
+Svezia, Jan Olsson, TD, 82
+Svezia, Kent Karlsson, DC, 83
+Svezia, Björn Nordqvist, DC, 84
+Svezia, Jörgen Augustsson, TS, 81
+Svezia, Ove Grahn, CC, 83
+Svezia, Bo Larsson, CC, 84
+Svezia, Conny Torstensson, ED, 82
+Svezia, Roland Sandberg, ATT, 84
+Svezia, Ralf Edström, ATT, 85
+Svezia, Harry Bild, ATT, 81
+
+Germania Est, Jürgen Croy, POR, 86
+Germania Est, Gerd Kische, TD, 83
+Germania Est, Bernd Bransch, DC, 85
+Germania Est, Konrad Weise, DC, 84
+Germania Est, Siegmar Wätzlich, TS, 82
+Germania Est, Reinhard Lauck, CC, 83
+Germania Est, Jürgen Pommerenke, CC, 84
+Germania Est, Lothar Kurbjuweit, CC, 82
+Germania Est, Jürgen Sparwasser, TRQ, 86
+Germania Est, Martin Hoffmann, ATT, 84
+Germania Est, Joachim Streich, ATT, 85
+
+Jugoslavia, Enver Marić, POR, 84
+Jugoslavia, Ivan Buljan, TD, 83
+Jugoslavia, Josip Katalinski, DC, 85
+Jugoslavia, Vladislav Bogićević, DC, 84
+Jugoslavia, Enver Hadžiabdić, TS, 83
+Jugoslavia, Branko Oblak, CC, 86
+Jugoslavia, Dražen Mužinić, CC, 83
+Jugoslavia, Jovan Aćimović, TRQ, 85
+Jugoslavia, Ilija Petković, ED, 84
+Jugoslavia, Ivica Šurjak, ES, 85
+Jugoslavia, Dragan Džajić, ATT, 89
+
+Argentina, Daniel Carnevali, POR, 82
+Argentina, Enrique Wolff, TD, 84
+Argentina, Roberto Perfumo, DC, 86
+Argentina, Ramón Heredia, DC, 84
+Argentina, Francisco Sá, TS, 82
+Argentina, Ángel Bargas, CC, 83
+Argentina, Roberto Telch, CC, 83
+Argentina, Carlos Babington, TRQ, 85
+Argentina, René Houseman, ED, 86
+Argentina, Rubén Ayala, ATT, 85
+Argentina, Mario Kempes, ATT, 86
+
+Scozia, David Harvey, POR, 83
+Scozia, Danny McGrain, TD, 85
+Scozia, Jim Holton, DC, 83
+Scozia, Martin Buchan, DC, 84
+Scozia, Sandy Jardine, TS, 84
+Scozia, Billy Bremner, CC, 87
+Scozia, David Hay, CC, 84
+Scozia, Peter Lorimer, ED, 85
+Scozia, Lou Macari, TRQ, 84
+Scozia, Kenny Dalglish, ATT, 88
+Scozia, Joe Jordan, ATT, 86
+
+Italia, Dino Zoff, POR, 92
+Italia, Luciano Spinosi, TD, 85
+Italia, Francesco Morini, DC, 86
+Italia, Tarcisio Burgnich, DC, 87
+Italia, Giacinto Facchetti, TS, 90
+Italia, Romeo Benetti, CC, 86
+Italia, Fabio Capello, CC, 87
+Italia, Sandro Mazzola, TRQ, 88
+Italia, Gianni Rivera, TRQ, 90
+Italia, Franco Causio, ED, 87
+Italia, Gigi Riva, ATT, 92
+
+Cile, Leopoldo Vallejos, POR, 82
+Cile, Rolando García, TD, 81
+Cile, Alberto Quintano, DC, 85
+Cile, Elías Figueroa, DC, 88
+Cile, Antonio Arias, TS, 81
+Cile, Francisco Valdés, CC, 84
+Cile, Guillermo Páez, CC, 82
+Cile, Carlos Reinoso, TRQ, 85
+Cile, Sergio Ahumada, ED, 82
+Cile, Leonardo Véliz, ES, 81
+Cile, Carlos Caszely, ATT, 86
+
+Bulgaria, Stefan Staykov, POR, 81
+Bulgaria, Aleksandar Vasilev, TD, 80
+Bulgaria, Dobromir Zhechev, DC, 82
+Bulgaria, Ivan Zafirov, DC, 81
+Bulgaria, Tsonyo Vasilev, TS, 80
+Bulgaria, Dimitar Penev, CC, 83
+Bulgaria, Hristo Bonev, TRQ, 86
+Bulgaria, Voynov Voynov, CC, 81
+Bulgaria, Georgi Denev, ES, 82
+Bulgaria, Pavel Panov, ATT, 83
+Bulgaria, Bozhidar Grigorov, ATT, 81
+
+Uruguay, Ladislao Mazurkiewicz, POR, 86
+Uruguay, Pablo Forlán, TD, 84
+Uruguay, Baudilio Jáuregui, DC, 82
+Uruguay, Juan Masnik, DC, 81
+Uruguay, Ricardo Pavoni, TS, 84
+Uruguay, Víctor Espárrago, CC, 85
+Uruguay, Pedro Rocha, TRQ, 87
+Uruguay, Julio Montero Castillo, CC, 83
+Uruguay, Luis Cubilla, ED, 85
+Uruguay, Fernando Morena, ATT, 86
+Uruguay, Denis Milar, ATT, 82
+
+Australia, Jack Reilly, POR, 76
+Australia, Doug Utjesenovic, TD, 75
+Australia, Peter Wilson, DC, 76
+Australia, Colin Curran, DC, 74
+Australia, Manfred Schaefer, TS, 75
+Australia, Ray Richards, CC, 75
+Australia, Jimmy Rooney, CC, 76
+Australia, Jimmy Mackay, CC, 75
+Australia, Johnny Warren, TRQ, 77
+Australia, Attila Abonyi, ATT, 75
+Australia, Branko Buljevic, ATT, 76
+
+Zaire, Robert Kazadi, POR, 75
+Zaire, Ilunga Mwepu, TD, 74
+Zaire, Tshimen Bwanga, DC, 77
+Zaire, Boba Lobilo, DC, 75
+Zaire, Raymond Mukombo, TS, 74
+Zaire, Massamba Kilasu, CC, 73
+Zaire, Mabuza Mana, CC, 74
+Zaire, Mantantu Kidumu, TRQ, 75
+Zaire, Mulamba Ndaye, ATT, 76
+Zaire, Etepé Kakoko, ATT, 75
+Zaire, Kembo Uba Kembo, ATT, 74
+
+Haiti, Henri Francillon, POR, 76
+Haiti, Pierre Bayonne, TD, 75
+Haiti, Fritz Bouthe, DC, 74
+Haiti, Wilner Nazaire, DC, 75
+Haiti, Jean-Claude Désir, TS, 74
+Haiti, Eddy Antoine, CC, 75
+Haiti, Philippe Vorbe, CC, 76
+Haiti, Jean-Claude Auguste, CC, 74
+Haiti, Guy Saint-Vil, ED, 74
+Haiti, Emmanuel Sanon, ATT, 78
+Haiti, Guy François, ATT, 75

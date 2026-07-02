@@ -1,0 +1,193 @@
+SQUADRA, GIOCATORE, RUOLO, RATING
+
+Brasile, Félix, POR, 82
+Brasile, Carlos Alberto, TD, 92
+Brasile, Brito, DC, 84
+Brasile, Piazza, DC, 85
+Brasile, Everaldo, TS, 84
+Brasile, Clodoaldo, CC, 86
+Brasile, Gérson, CC, 91
+Brasile, Rivellino, TRQ, 92
+Brasile, Jairzinho, ED, 93
+Brasile, Pelé, ATT, 98
+Brasile, Tostão, ATT, 90
+
+Italia, Enrico Albertosi, POR, 88
+Italia, Tarcisio Burgnich, TD, 88
+Italia, Pierluigi Cera, DC, 86
+Italia, Roberto Rosato, DC, 87
+Italia, Giacinto Facchetti, TS, 92
+Italia, Mario Bertini, CC, 85
+Italia, Giancarlo De Sisti, CC, 87
+Italia, Sandro Mazzola, TRQ, 90
+Italia, Angelo Domenghini, ED, 87
+Italia, Roberto Boninsegna, ATT, 88
+Italia, Gigi Riva, ATT, 93
+
+Germania Ovest, Sepp Maier, POR, 91
+Germania Ovest, Berti Vogts, TD, 88
+Germania Ovest, Karl-Heinz Schnellinger, DC, 89
+Germania Ovest, Willi Schulz, DC, 87
+Germania Ovest, Klaus-Dieter Sieloff, TS, 84
+Germania Ovest, Franz Beckenbauer, CC, 94
+Germania Ovest, Wolfgang Overath, TRQ, 90
+Germania Ovest, Jürgen Grabowski, ED, 86
+Germania Ovest, Hannes Löhr, ES, 85
+Germania Ovest, Uwe Seeler, ATT, 91
+Germania Ovest, Gerd Müller, ATT, 95
+
+Uruguay, Ladislao Mazurkiewicz, POR, 89
+Uruguay, Luis Ubiña, TD, 85
+Uruguay, Atilio Ancheta, DC, 86
+Uruguay, Roberto Matosas, DC, 85
+Uruguay, Juan Mujica, TS, 84
+Uruguay, Julio Montero Castillo, CC, 85
+Uruguay, Ildo Maneiro, CC, 84
+Uruguay, Víctor Espárrago, CC, 85
+Uruguay, Luis Cubilla, ED, 86
+Uruguay, Pedro Rocha, TRQ, 88
+Uruguay, Julio César Morales, ES, 84
+
+Unione Sovietica, Anzor Kavazashvili, POR, 85
+Unione Sovietica, Revaz Dzodzuashvili, TD, 84
+Unione Sovietica, Albert Shesternyov, DC, 88
+Unione Sovietica, Murtaz Khurtsilava, DC, 87
+Unione Sovietica, Evgeny Lovchev, TS, 84
+Unione Sovietica, Kakhi Asatiani, CC, 84
+Unione Sovietica, Vladimir Muntyan, CC, 86
+Unione Sovietica, Gennady Yevryuzhikhin, ES, 84
+Unione Sovietica, Anatoliy Byshovets, ATT, 87
+Unione Sovietica, Givi Nodia, ATT, 83
+Unione Sovietica, Vitaliy Khmelnytskyi, ATT, 83
+
+Inghilterra, Gordon Banks, POR, 93
+Inghilterra, Keith Newton, TD, 84
+Inghilterra, Brian Labone, DC, 85
+Inghilterra, Bobby Moore, DC, 94
+Inghilterra, Terry Cooper, TS, 86
+Inghilterra, Alan Mullery, CC, 85
+Inghilterra, Alan Ball, CC, 87
+Inghilterra, Martin Peters, CC, 86
+Inghilterra, Bobby Charlton, TRQ, 92
+Inghilterra, Geoff Hurst, ATT, 89
+Inghilterra, Francis Lee, ATT, 87
+
+Perù, Luis Rubiños, POR, 81
+Perù, Eloy Campos, TD, 80
+Perù, Orlando de la Torre, DC, 82
+Perù, Héctor Chumpitaz, DC, 88
+Perù, Nicolás Fuentes, TS, 82
+Perù, Ramón Mifflin, CC, 84
+Perù, Roberto Challe, CC, 85
+Perù, Julio Baylón, ED, 83
+Perù, Teófilo Cubillas, TRQ, 91
+Perù, Pedro Pablo León, ATT, 85
+Perù, Alberto Gallardo, ES, 84
+
+Messico, Ignacio Calderón, POR, 85
+Messico, Juan Manuel Alejándrez, TD, 82
+Messico, Gustavo Peña, DC, 86
+Messico, Mario Pérez, DC, 84
+Messico, Guillermo Hernández, TS, 83
+Messico, Antonio Munguía, CC, 83
+Messico, Héctor Pulido, CC, 83
+Messico, Ignacio Basaguren, CC, 82
+Messico, Javier Valdivia, TRQ, 84
+Messico, Aaron Padilla, ATT, 83
+Messico, Enrique Borja, ATT, 85
+
+Svezia, Ronnie Hellström, POR, 86
+Svezia, Jan Olsson, TD, 82
+Svezia, Kurt Axelsson, DC, 83
+Svezia, Björn Nordqvist, DC, 85
+Svezia, Tommy Svensson, TS, 82
+Svezia, Bo Larsson, CC, 85
+Svezia, Ove Grahn, CC, 84
+Svezia, Leif Eriksson, CC, 82
+Svezia, Örjan Persson, ES, 83
+Svezia, Tom Turesson, ATT, 82
+Svezia, Ove Kindvall, ATT, 86
+
+Belgio, Christian Piot, POR, 84
+Belgio, Georges Heylens, TD, 84
+Belgio, Nicolas Dewalque, DC, 83
+Belgio, Léon Jeck, DC, 82
+Belgio, Jean Thissen, TS, 82
+Belgio, Wilfried Van Moer, CC, 87
+Belgio, Erwin Vandendaele, CC, 83
+Belgio, Jean Dockx, CC, 84
+Belgio, Léon Semmeling, ED, 83
+Belgio, Paul Van Himst, ATT, 88
+Belgio, Raoul Lambert, ATT, 85
+
+Romania, Stere Adamache, POR, 82
+Romania, Lajos Sătmăreanu, TD, 82
+Romania, Nicolae Lupescu, DC, 83
+Romania, Cornel Dinu, DC, 85
+Romania, Mihai Mocanu, TS, 82
+Romania, Ion Dumitru, CC, 84
+Romania, Radu Nunweiller, CC, 84
+Romania, Mircea Lucescu, ED, 85
+Romania, Emerich Dembrovschi, TRQ, 83
+Romania, Alexandru Neagu, ATT, 83
+Romania, Florea Dumitrache, ATT, 86
+
+Israele, Yitzhak Vissoker, POR, 81
+Israele, Shraga Bar, TD, 79
+Israele, Zvi Rosen, DC, 80
+Israele, Yisha'ayahu Schwager, DC, 79
+Israele, Menachem Bello, TS, 78
+Israele, Shmuel Rosenthal, CC, 80
+Israele, Yitzhak Shum, CC, 79
+Israele, Rachamim Talbi, ED, 78
+Israele, Giora Spiegel, TRQ, 82
+Israele, Mordechai Spiegler, ATT, 84
+Israele, Yehoshua Feigenbaum, ATT, 80
+
+Bulgaria, Simeon Simeonov, POR, 82
+Bulgaria, Aleksandar Shalamanov, TD, 83
+Bulgaria, Dimitar Penev, DC, 85
+Bulgaria, Ivan Davidov, DC, 82
+Bulgaria, Stefan Aladzhov, TS, 82
+Bulgaria, Dinko Dermendzhiev, CC, 83
+Bulgaria, Hristo Bonev, TRQ, 86
+Bulgaria, Dimitar Yakimov, TRQ, 85
+Bulgaria, Georgi Popov, ED, 82
+Bulgaria, Georgi Asparuhov, ATT, 87
+Bulgaria, Petar Zhekov, ATT, 85
+
+Cecoslovacchia, Ivo Viktor, POR, 87
+Cecoslovacchia, Karol Dobiaš, TD, 85
+Cecoslovacchia, Alexander Horváth, DC, 84
+Cecoslovacchia, Vladimír Hagara, DC, 83
+Cecoslovacchia, Ján Zlocha, TS, 82
+Cecoslovacchia, Ladislav Kuna, CC, 85
+Cecoslovacchia, Ivan Hrdlička, CC, 83
+Cecoslovacchia, Jaroslav Pollák, CC, 84
+Cecoslovacchia, František Veselý, ED, 83
+Cecoslovacchia, Jozef Adamec, ATT, 86
+Cecoslovacchia, Ladislav Petráš, ATT, 85
+
+Marocco, Allal Benkassou, POR, 80
+Marocco, Abdullah Lamrani, TD, 79
+Marocco, Boujemaa Benkrifa, DC, 78
+Marocco, Kacem Slimani, DC, 79
+Marocco, Jelili Fadili, TS, 78
+Marocco, Mohammed Mahroufi, CC, 79
+Marocco, Driss Bamous, CC, 80
+Marocco, Said Ghandi, CC, 79
+Marocco, Maouhoub Ghazouani, ATT, 80
+Marocco, Houmane Jarir, ATT, 81
+Marocco, Ahmed Faras, ATT, 82
+
+El Salvador, Raúl Magaña, POR, 77
+El Salvador, Roberto Rivas, TD, 76
+El Salvador, Salvador Mariona, DC, 77
+El Salvador, Jorge Vásquez, DC, 76
+El Salvador, Guillermo Castro, TS, 75
+El Salvador, José Quintanilla, CC, 76
+El Salvador, Mauricio Rodríguez, CC, 77
+El Salvador, Jorge Baires, CC, 75
+El Salvador, Genaro Sermeño, TRQ, 76
+El Salvador, Elmer Acevedo, ATT, 76
+El Salvador, Juan Ramón Martínez, ATT, 78
