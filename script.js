@@ -84,6 +84,9 @@
   let peer = null;
   let connections = []; 
   let hostConnection = null; 
+  
+  // FIX: playerConnections è separato da mpState per evitare il cyclic object value
+  let playerConnections = {}; 
   let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [] };
   let myMpId = Math.random().toString(36).substr(2, 9);
 
@@ -101,7 +104,6 @@
   }
   initRosa(); 
 
-  // FIX: Funzione universale per inviare messaggi cross-browser
   function sendSafe(conn, msg) {
     if (conn && conn.open) {
       try {
@@ -191,7 +193,14 @@
       });
       conn.on('close', () => { 
         connections = connections.filter(c => c !== conn); 
-        handleClientDisconnect(conn); // FIX CRITICAL: Gestione abbandono
+        let disconnectedPlayerId = null;
+        for (let id in playerConnections) {
+            if (playerConnections[id] === conn) {
+                disconnectedPlayerId = id;
+                break;
+            }
+        }
+        if (disconnectedPlayerId) handleClientDisconnect(disconnectedPlayerId);
       });
     });
     peer.on('error', (err) => {
@@ -230,7 +239,6 @@
         handleClientMessage(msg);
       });
       
-      // FIX CRITICAL: Se l'host chiude, torna alla home
       hostConnection.on('close', () => {
         showToast('L\'host ha abbandonato la partita.');
         btnNewDraft.click();
@@ -247,8 +255,7 @@
   });
 
   function broadcastToClients(msg) { 
-    const strMsg = JSON.stringify(msg);
-    connections.forEach(conn => sendSafe(conn, strMsg)); 
+    connections.forEach(conn => sendSafe(conn, msg)); 
   }
 
   function handleHostMessage(msg, conn) {
@@ -257,7 +264,8 @@
     } else if (msg.type === 'player_join') {
       const botIdx = mpState.players.findIndex(p => p.isBot);
       if (botIdx !== -1) {
-        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false, conn: conn };
+        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false };
+        playerConnections[msg.id] = conn; // Mappa l'ID alla connessione, ma FUORI da mpState!
         renderLobbyList(); 
         showLobby(); 
         broadcastToClients({ type: 'state_sync', state: mpState });
@@ -299,19 +307,20 @@
     }
   }
 
-  // FIX CRITICAL: Se un client si disconnette, diventa un BOT
-  function handleClientDisconnect(conn) {
-    const pIdx = mpState.players.findIndex(p => p.conn === conn);
+  function handleClientDisconnect(playerId) {
+    if (!playerId) return;
+    const pIdx = mpState.players.findIndex(p => p.id === playerId);
     if (pIdx !== -1) {
       const p = mpState.players[pIdx];
       const oldId = p.id;
       p.isBot = true;
       p.id = 'bot_dc_' + Date.now();
       p.name = p.name + " (Bot)";
-      p.conn = null;
       p.ready = true;
       
-      showToast(`${p.name} si è disconnesso. Sarà sostituito da un Bot.`);
+      delete playerConnections[playerId];
+      
+      showToast(`${p.name.replace(" (Bot)", "")} si è disconnesso. Sarà sostituito da un Bot.`);
       
       if (tournament) {
         tournament.rounds.forEach(round => {
@@ -716,7 +725,7 @@
     initRosa(); renderPitch(); extractionLabel.textContent = 'Pronto: premi "Pesca turno"';
     btnPesca.disabled = Object.keys(database).length === 0;
     builderView.classList.remove('hidden'); tournamentView.classList.remove('active'); tournament = null;
-    if (peer) peer.destroy(); peer = null; connections = []; hostConnection = null;
+    if (peer) peer.destroy(); peer = null; connections = []; hostConnection = null; playerConnections = {};
     isMultiplayer = false; isEspertoMode = false; draftTimer.style.display = 'none';
     homeOverlay.classList.remove('overlay-hidden');
   });
