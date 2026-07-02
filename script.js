@@ -218,7 +218,7 @@
       if (botIdx !== -1) {
         mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false };
         renderLobbyList(); 
-        showLobby(); // Aggiorna il bottone dell'host
+        showLobby(); 
         broadcastToClients({ type: 'state_sync', state: mpState });
       }
     } else if (msg.type === 'player_ready') {
@@ -226,7 +226,7 @@
       if (p) { 
         p.ready = true; 
         renderLobbyList(); 
-        showLobby(); // Aggiorna il bottone dell'host
+        showLobby(); 
         broadcastToClients({ type: 'state_sync', state: mpState }); 
       }
     } else if (msg.type === 'team_submitted') {
@@ -283,7 +283,6 @@
       btnStartMP.style.display = 'block';
       lobbyStatusText.style.display = 'none';
 
-      // Logica originale che funzionava
       btnStartMP.onclick = () => {
         const allReady = mpState.players.every(p => p.ready);
         if (!allReady) { showToast('Non tutti i giocatori sono pronti!'); return; }
@@ -423,7 +422,6 @@
 
   function splitCSVLine(line){ const out = []; let cur = ''; let inQ = false; for (let i=0;i<line.length;i++){ const ch = line[i]; if (ch === '"'){ if (inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; } else if (ch === ',' && !inQ){ out.push(cur); cur = ''; } else { cur += ch; } } out.push(cur); return out.map(s => s.trim()); }
   
-  // FIX SINTASSI QUI
   function parseCSV(text){
     const lines = text.split(/\r\n|\n|\r/).filter(l => l.trim().length > 0);
     if (lines.length === 0) return [];
@@ -546,7 +544,6 @@
     extractionLabel.innerHTML = `${escapeHTML(giocatore.nome)} <span class="hint">Tocca un ruolo verde!</span>`;
     renderPitch();
 
-    // SCROLL MOBILE
     if (window.innerWidth < 880) {
       setTimeout(() => {
         pitchCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -567,7 +564,6 @@
     playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
     extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; renderPitch();
     
-    // SCROLL MOBILE
     if (window.innerWidth < 880) {
       setTimeout(() => {
         draftHeader.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -675,6 +671,13 @@
     builderView.classList.add('hidden'); tournamentView.classList.add('active'); 
     tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer (${size})` : `Mondiali a ${size} Squadre`;
     const teams = teamsList || [];
+    
+    // FIX CRITICO: Assicuriamoci che il flag isUser sia corretto per il giocatore locale
+    // L'host potrebbe averlo impostato in base al suo ID, quindi lo sovrascriviamo qui.
+    teams.forEach(t => {
+      t.isUser = (t.id === myMpId);
+    });
+
     teams.sort(() => Math.random() - 0.5);
     tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
 
