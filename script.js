@@ -101,6 +101,17 @@
   }
   initRosa(); 
 
+  // FIX: Funzione universale per inviare messaggi cross-browser
+  function sendSafe(conn, msg) {
+    if (conn && conn.open) {
+      try {
+        conn.send(JSON.stringify(msg));
+      } catch (e) {
+        console.error("Errore invio dati:", e);
+      }
+    }
+  }
+
   function populateFormations(containerId) {
     const c = document.getElementById(containerId);
     c.innerHTML = '';
@@ -173,8 +184,15 @@
     });
     peer.on('connection', (conn) => {
       connections.push(conn);
-      conn.on('data', (msg) => handleHostMessage(msg));
-      conn.on('close', () => { connections = connections.filter(c => c !== conn); });
+      conn.on('data', (rawData) => {
+        let msg;
+        try { msg = typeof rawData === 'string' ? JSON.parse(rawData) : rawData; } catch(e) { return; }
+        handleHostMessage(msg, conn);
+      });
+      conn.on('close', () => { 
+        connections = connections.filter(c => c !== conn); 
+        handleClientDisconnect(conn); // FIX CRITICAL: Gestione abbandono
+      });
     });
     peer.on('error', (err) => {
       showToast('Errore Host: ' + err.type);
@@ -203,10 +221,20 @@
 
       hostConnection.on('open', () => {
         clearTimeout(timeout);
-        hostConnection.send({ type: 'request_state', from: myMpId });
-        hostConnection.send({ type: 'player_join', id: myMpId, name: joinName, formation: joinForm });
+        sendSafe(hostConnection, { type: 'request_state', from: myMpId });
+        sendSafe(hostConnection, { type: 'player_join', id: myMpId, name: joinName, formation: joinForm });
       });
-      hostConnection.on('data', (msg) => handleClientMessage(msg));
+      hostConnection.on('data', (rawData) => {
+        let msg;
+        try { msg = typeof rawData === 'string' ? JSON.parse(rawData) : rawData; } catch(e) { return; }
+        handleClientMessage(msg);
+      });
+      
+      // FIX CRITICAL: Se l'host chiude, torna alla home
+      hostConnection.on('close', () => {
+        showToast('L\'host ha abbandonato la partita.');
+        btnNewDraft.click();
+      });
     });
     
     peer.on('error', (err) => {
@@ -218,15 +246,18 @@
     });
   });
 
-  function broadcastToClients(msg) { connections.forEach(conn => conn.send(msg)); }
+  function broadcastToClients(msg) { 
+    const strMsg = JSON.stringify(msg);
+    connections.forEach(conn => sendSafe(conn, strMsg)); 
+  }
 
-  function handleHostMessage(msg) {
+  function handleHostMessage(msg, conn) {
     if (msg.type === 'request_state') {
-      broadcastToClients({ type: 'state_sync', state: mpState });
+      sendSafe(conn, { type: 'state_sync', state: mpState });
     } else if (msg.type === 'player_join') {
       const botIdx = mpState.players.findIndex(p => p.isBot);
       if (botIdx !== -1) {
-        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false };
+        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false, conn: conn };
         renderLobbyList(); 
         showLobby(); 
         broadcastToClients({ type: 'state_sync', state: mpState });
@@ -265,6 +296,37 @@
       renderBracket();
       broadcastTournament();
       if (checkTournamentEnd()) return;
+    }
+  }
+
+  // FIX CRITICAL: Se un client si disconnette, diventa un BOT
+  function handleClientDisconnect(conn) {
+    const pIdx = mpState.players.findIndex(p => p.conn === conn);
+    if (pIdx !== -1) {
+      const p = mpState.players[pIdx];
+      const oldId = p.id;
+      p.isBot = true;
+      p.id = 'bot_dc_' + Date.now();
+      p.name = p.name + " (Bot)";
+      p.conn = null;
+      p.ready = true;
+      
+      showToast(`${p.name} si è disconnesso. Sarà sostituito da un Bot.`);
+      
+      if (tournament) {
+        tournament.rounds.forEach(round => {
+          round.matches.forEach(match => {
+            if (match.team1 && match.team1.id === oldId) match.team1.id = p.id;
+            if (match.team2 && match.team2.id === oldId) match.team2.id = p.id;
+          });
+        });
+        simulateAllAIMatches();
+        renderBracket();
+        broadcastTournament();
+      } else {
+        renderLobbyList();
+        broadcastToClients({ type: 'state_sync', state: mpState });
+      }
     }
   }
 
@@ -317,7 +379,7 @@
       }
 
       btnReadyMP.onclick = () => {
-        hostConnection.send({ type: 'player_ready', id: myMpId });
+        sendSafe(hostConnection, { type: 'player_ready', id: myMpId });
         btnReadyMP.textContent = 'In Attesa Host...';
         btnReadyMP.disabled = true;
       };
@@ -602,7 +664,7 @@
           return; 
         }
       } else {
-        hostConnection.send({ type: 'team_submitted', id: myMpId, team: miaRosa, rating: userTeamRating });
+        sendSafe(hostConnection, { type: 'team_submitted', id: myMpId, team: miaRosa, rating: userTeamRating });
       }
 
       modalEyebrow.textContent = "In Attesa"; 
@@ -839,15 +901,13 @@
     const myStats = tournament ? (tournament.userStats || { gf: 0, gs: 0, wins: 0, losses: 0 }) : { gf: 0, gs: 0, wins: 0, losses: 0 };
     const myEliminated = tournament ? (tournament.userEliminated || false) : false;
     
-    // FIX CRITICO: Controlliamo se l'host ha confermato il nostro risultato pending
     if (pendingMatchResult) {
       const hostMatch = t.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
       if (hostMatch && hostMatch.played) {
         clearInterval(pendingMatchInterval);
         pendingMatchResult = null;
       } else {
-        // L'host non ha ancora aggiornato il tabellone, reinvia immediatamente
-        hostConnection.send({ type: 'match_result', rIdx: pendingMatchResult.rIdx, mIdx: pendingMatchResult.mIdx, score1: pendingMatchResult.score1, score2: pendingMatchResult.score2, pens1: pendingMatchResult.pens1, pens2: pendingMatchResult.pens2 });
+        sendSafe(hostConnection, { type: 'match_result', rIdx: pendingMatchResult.rIdx, mIdx: pendingMatchResult.mIdx, score1: pendingMatchResult.score1, score2: pendingMatchResult.score2, pens1: pendingMatchResult.pens1, pens2: pendingMatchResult.pens2 });
       }
     }
 
@@ -860,7 +920,6 @@
         if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
         if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
         
-        // Se l'host non ha ancora registrato il risultato, ma io l'ho giocato, mantengo il mio risultato locale per non far riappetire il tasto "Gioca"
         if (pendingMatchResult && rIdx === pendingMatchResult.rIdx && mIdx === pendingMatchResult.mIdx && !match.played) {
           match.played = true;
           match.score1 = pendingMatchResult.score1;
@@ -901,7 +960,7 @@
       else { 
         tournament.userStats.losses++; 
         tournament.userEliminated = true; 
-        showEliminatedScreen(); // Effetto sorpresa
+        showEliminatedScreen();
       }
     }
 
@@ -918,13 +977,11 @@
           broadcastTournament();
           if (checkTournamentEnd()) return;
         } else {
-          // Il client invia il risultato e si mette in attesa di conferma dall'host
           pendingMatchResult = { rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 };
-          hostConnection.send({ type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
+          sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
           
-          // Se l'host non aggiorna il tabellone entro 3 secondi, reinvia il risultato
           pendingMatchInterval = setInterval(() => {
-            hostConnection.send({ type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
+            sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
           }, 3000);
         }
       } else {
@@ -936,7 +993,6 @@
     }, 2000);
   }
 
-  // EFFETTO SORPRESA: Schermata di attesa se vieni eliminato
   function showEliminatedScreen() {
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
     const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove();
@@ -956,7 +1012,7 @@
 
   function showChampion(winner) {
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
-    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove(); // Rimuovi la schermata di eliminazione se presente
+    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove(); 
     
     modalEyebrow.textContent = "Fine Mondiale"; modalTitle.textContent = "Campione del Mondo!"; modalTitle.classList.add('champion');
     modalContent.style.display = 'none'; btnPlayTournament.style.display = 'none'; btnNewDraft.textContent = 'Torna alla Home';
