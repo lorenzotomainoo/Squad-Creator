@@ -84,8 +84,6 @@
   let peer = null;
   let connections = []; 
   let hostConnection = null; 
-  
-  // FIX: playerConnections è separato da mpState per evitare il cyclic object value
   let playerConnections = {}; 
   let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [] };
   let myMpId = Math.random().toString(36).substr(2, 9);
@@ -265,7 +263,7 @@
       const botIdx = mpState.players.findIndex(p => p.isBot);
       if (botIdx !== -1) {
         mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false };
-        playerConnections[msg.id] = conn; // Mappa l'ID alla connessione, ma FUORI da mpState!
+        playerConnections[msg.id] = conn; 
         renderLobbyList(); 
         showLobby(); 
         broadcastToClients({ type: 'state_sync', state: mpState });
@@ -712,6 +710,10 @@
           return { name: p.name, rating: p.rating, isUser: (p.id === myMpId), id: p.id };
         }
       });
+      
+      // FIX CRITICO: L'HOST MESCOLA LE SQUADRE PRIMA DI INVIARLE, COSÌ TUTTI AVRANNO LO STESSO CALENDARIO
+      teams.sort(() => Math.random() - 0.5);
+      
       modalOverlay.classList.remove('show'); 
       broadcastToClients({ type: 'start_tournament', teams: teams });
       startTournament(teams.length, teams);
@@ -746,6 +748,8 @@
         const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
         teams.push({ name: `${squadraNome} (${anno})`, rating: rating, isUser: false, id: 'bot'+i });
       }
+      // FIX: Mescoliamo anche per il single player
+      teams.sort(() => Math.random() - 0.5);
       startTournament(selectedTournSize, teams); 
     }
   });
@@ -759,7 +763,9 @@
       t.isUser = (t.id === myMpId);
     });
 
-    teams.sort(() => Math.random() - 0.5);
+    // FIX CRITICO: RIMOSSO IL SORT DA QUI, VENIVA FATTO IN LOCALE DA OGNI GIOCATORE
+    // teams.sort(() => Math.random() - 0.5);
+
     tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
 
     let round1Matches = [];
@@ -776,6 +782,7 @@
     
     if (!isMultiplayer || mpState.host) {
       simulateAllAIMatches();
+      if (isMultiplayer) broadcastTournament(); // FIX: Invia subito i risultati AI del primo turno
     }
     renderBracket();
   }
