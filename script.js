@@ -90,6 +90,9 @@
   let pickTimerInterval = null;
   let pickTimeLeft = 0;
 
+  let pendingMatchResult = null;
+  let pendingMatchInterval = null;
+
   function initRosa() { 
     miaRosa = {}; 
     Object.keys(COMPATIBILITA).forEach(p => miaRosa[p] = null); 
@@ -655,7 +658,6 @@
     if (isMultiplayer && mpState.host) {
       checkAllTeamsSubmitted(); 
     } else if (!isMultiplayer) {
-      // AVVIO DIRETTO PER IL SINGLE PLAYER CON LE SQUADRE SCELTE NEL SETUP
       const teams = [{ name: nomeSquadra, rating: userTeamRating, isUser: true, id: myMpId }];
       const anni = Object.keys(database);
       for (let i = 1; i < selectedTournSize; i++) {
@@ -716,9 +718,23 @@
         } else {
           const isUserMatch = (match.team1 && match.team1.isUser) || (match.team2 && match.team2.isUser);
           if (isUserMatch && !tournament.userEliminated) {
-            matchDiv.classList.add('playable');
-            matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn">Gioca Partita</div>`;
-            matchDiv.addEventListener('click', () => startMatchSimulation(match, rIdx, mIdx));
+            
+            // FIX CRITICO: Se è multiplayer, non sono l'host, e la partita è tra due umani, non posso giocarla.
+            let canPlay = true;
+            if (isMultiplayer && !mpState.host) {
+              const isHumanVsHuman = match.team1 && !match.team1.id.startsWith('bot') && match.team2 && !match.team2.id.startsWith('bot');
+              if (isHumanVsHuman) {
+                canPlay = false;
+              }
+            }
+
+            if (canPlay) {
+              matchDiv.classList.add('playable');
+              matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn">Gioca Partita</div>`;
+              matchDiv.addEventListener('click', () => startMatchSimulation(match, rIdx, mIdx));
+            } else {
+              matchDiv.innerHTML = `<div class="match-team ${t1Class}"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team ${t2Class}"><span>${t2Name}</span><span class="match-score">-</span></div><div class="play-match-btn" style="background:var(--muted-2);">In attesa dell'Host...</div>`;
+            }
           } else {
             matchDiv.innerHTML = `<div class="match-team"><span>${t1Name}</span><span class="match-score">-</span></div><div class="match-team"><span>${t2Name}</span><span class="match-score">-</span></div>`;
           }
@@ -831,16 +847,51 @@
     const myStats = tournament ? (tournament.userStats || { gf: 0, gs: 0, wins: 0, losses: 0 }) : { gf: 0, gs: 0, wins: 0, losses: 0 };
     const myEliminated = tournament ? (tournament.userEliminated || false) : false;
     
+    // FIX CRITICO: Salviamo i match che abbiamo giocato localmente per non farceli resettare dall'host
+    const locallyPlayedMatches = {};
+    if (tournament) {
+      tournament.rounds.forEach((round, rIdx) => {
+        round.matches.forEach((match, mIdx) => {
+          if (match.played) {
+            locallyPlayedMatches[`${rIdx}-${mIdx}`] = {
+              score1: match.score1, score2: match.score2, pens1: match.pens1, pens2: match.pens2, winner: match.winner
+            };
+          }
+        });
+      });
+    }
+
     tournament = t;
     tournament.userStats = myStats;
     tournament.userEliminated = myEliminated;
     
-    tournament.rounds.forEach(round => {
-      round.matches.forEach(match => {
+    tournament.rounds.forEach((round, rIdx) => {
+      round.matches.forEach((match, mIdx) => {
         if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
         if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
+        
+        // Se l'host non ha ancora registrato il risultato, ma io l'ho giocato, mantengo il mio risultato
+        if (!match.played && locallyPlayedMatches[`${rIdx}-${mIdx}`]) {
+          const local = locallyPlayedMatches[`${rIdx}-${mIdx}`];
+          match.played = true;
+          match.score1 = local.score1;
+          match.score2 = local.score2;
+          match.pens1 = local.pens1;
+          match.pens2 = local.pens2;
+          match.winner = local.winner;
+        }
       });
     });
+
+    // Se ho un risultato in attesa di conferma, e l'host l'ha registrato, fermo il retry
+    if (pendingMatchResult) {
+      const match = tournament.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
+      if (match && match.played) {
+        clearInterval(pendingMatchInterval);
+        pendingMatchResult = null;
+      }
+    }
+
     renderBracket();
     if (checkTournamentEnd()) return;
   }
@@ -881,7 +932,14 @@
           broadcastTournament();
           if (checkTournamentEnd()) return;
         } else {
+          // Il client invia il risultato e si mette in attesa di conferma dall'host
+          pendingMatchResult = { rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 };
           hostConnection.send({ type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
+          
+          // Se l'host non aggiorna il tabellone entro 3 secondi, reinvia il risultato
+          pendingMatchInterval = setInterval(() => {
+            hostConnection.send({ type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
+          }, 3000);
         }
       } else {
         advanceTournament(rIdx, mIdx, winner);
