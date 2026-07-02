@@ -29,7 +29,6 @@
   const setupOverlay = document.getElementById('setupOverlay');
   const mpSetupOverlay = document.getElementById('mpSetupOverlay');
   const mpLobbyOverlay = document.getElementById('mpLobbyOverlay');
-  const tournSetupOverlay = document.getElementById('tournSetupOverlay');
   
   const teamNameInput = document.getElementById('teamNameInput');
   const setupFormations = document.getElementById('setupFormations');
@@ -80,7 +79,7 @@
   const penTeam2 = document.getElementById('penTeam2');
   
   let selectedSetupFormation = '433';
-  let selectedTournSize = 16;
+  let selectedTournSize = 4;
 
   let peer = null;
   let connections = []; 
@@ -132,6 +131,14 @@
       document.querySelectorAll(`.mp-opt[data-group="${btn.dataset.group}"]`).forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     });
+  });
+
+  document.querySelectorAll('.tourn-size-btn').forEach(btn => { 
+    btn.addEventListener('click', () => { 
+      document.querySelectorAll('.tourn-size-btn').forEach(b => b.classList.remove('active')); 
+      btn.classList.add('active'); 
+      selectedTournSize = parseInt(btn.dataset.size); 
+    }); 
   });
 
   document.getElementById('btnCreateRoom').addEventListener('click', () => {
@@ -647,24 +654,21 @@
     modalOverlay.classList.remove('show'); 
     if (isMultiplayer && mpState.host) {
       checkAllTeamsSubmitted(); 
-    } else {
-      tournSetupOverlay.classList.remove('overlay-hidden'); 
+    } else if (!isMultiplayer) {
+      // AVVIO DIRETTO PER IL SINGLE PLAYER CON LE SQUADRE SCELTE NEL SETUP
+      const teams = [{ name: nomeSquadra, rating: userTeamRating, isUser: true, id: myMpId }];
+      const anni = Object.keys(database);
+      for (let i = 1; i < selectedTournSize; i++) {
+        const anno = anni[Math.floor(Math.random() * anni.length)]; 
+        const squadreAnno = Object.keys(database[anno]);
+        const squadraNome = squadreAnno[Math.floor(Math.random() * squadreAnno.length)]; 
+        const giocatori = database[anno][squadraNome];
+        const top11 = giocatori.slice(0, 11); 
+        const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
+        teams.push({ name: `${squadraNome} (${anno})`, rating: rating, isUser: false, id: 'bot'+i });
+      }
+      startTournament(selectedTournSize, teams); 
     }
-  });
-
-  document.querySelectorAll('.tourn-size-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tourn-size-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); selectedTournSize = parseInt(btn.dataset.size); }); });
-  document.getElementById('btnBackToDraft').addEventListener('click', () => { tournSetupOverlay.classList.add('overlay-hidden'); modalOverlay.classList.add('show'); });
-  document.getElementById('btnStartTournament').addEventListener('click', () => { 
-    tournSetupOverlay.classList.add('overlay-hidden'); 
-    const teams = [{ name: nomeSquadra, rating: userTeamRating, isUser: true, id: myMpId }];
-    const anni = Object.keys(database);
-    for (let i = 1; i < selectedTournSize; i++) {
-      const anno = anni[Math.floor(Math.random() * anni.length)]; const squadreAnno = Object.keys(database[anno]);
-      const squadraNome = squadreAnno[Math.floor(Math.random() * squadreAnno.length)]; const giocatori = database[anno][squadraNome];
-      const top11 = giocatori.slice(0, 11); const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
-      teams.push({ name: `${squadraNome} (${anno})`, rating: rating, isUser: false, id: 'bot'+i });
-    }
-    startTournament(selectedTournSize, teams); 
   });
 
   function startTournament(size, teamsList) {
@@ -672,8 +676,6 @@
     tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer (${size})` : `Mondiali a ${size} Squadre`;
     const teams = teamsList || [];
     
-    // FIX CRITICO: Assicuriamoci che il flag isUser sia corretto per il giocatore locale
-    // L'host potrebbe averlo impostato in base al suo ID, quindi lo sovrascriviamo qui.
     teams.forEach(t => {
       t.isUser = (t.id === myMpId);
     });

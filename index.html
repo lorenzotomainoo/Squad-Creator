@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Squad Builder Mondiali</title>
+<!-- FAVICON EMOJI PER EVITARE L'ERRORE 404 -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏆</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Anton&family=JetBrains+Mono:wght@400;500;700&family=Manrope:wght@400;600;800&display=swap" rel="stylesheet">
@@ -16,7 +17,7 @@
 <!-- HOME -->
 <div class="overlay-base" id="homeOverlay">
   <div class="home-box">
-    <div class="brand-eyebrow">Fantasy Draft</div>
+    <div class="brand-eyebrow">Fantasy Draft · Mondiali 1970–2026</div>
     <h1>Squad <span>Builder</span></h1>
     <p class="home-desc">Crea la tua rosa dei sogni pescando i giocatori dai più grandi mondiali della storia. Scegli la tua formazione, affronta il tabellone e alza la coppa!</p>
     <div class="mode-selection">
@@ -43,6 +44,12 @@
     <input type="text" id="teamNameInput" placeholder="Es. Real Mario" maxlength="10">
     <label>Scegli la Formazione</label>
     <div class="formations-grid" id="setupFormations"></div>
+    <label>Numero di Squadre</label>
+    <div class="formations-grid">
+      <button class="form-btn tourn-size-btn active" data-size="4">4</button>
+      <button class="form-btn tourn-size-btn" data-size="8">8</button>
+      <button class="form-btn tourn-size-btn" data-size="16">16</button>
+    </div>
     <button class="btn-primary" id="btnStart">Inizia il Draft</button>
   </div>
 </div>
@@ -86,6 +93,7 @@
       <input type="text" id="joinCodeInput" placeholder="Codice (4 lettere)" maxlength="4" style="text-transform:uppercase; margin-bottom:10px;">
       <button class="btn-primary" id="btnJoinRoom" style="background:var(--bg-deep); color:var(--green); border:1px solid var(--green); box-shadow:none;">Entra nella Lobby</button>
     </div>
+    <button class="btn-primary" id="btnBackHome" style="margin-top:15px; background:transparent; color:var(--muted); border:1px solid var(--muted-2); box-shadow:none;">Torna alla Home</button>
   </div>
 </div>
 
@@ -102,22 +110,6 @@
     <button class="btn-primary" id="btnReadyMP" style="display:none; margin-top:20px;">Sono Pronto</button>
     <button class="btn-primary" id="btnStartMP" style="display:none; margin-top:20px;">Avvia Draft</button>
     <p id="lobbyStatusText" style="font-family:var(--font-mono); font-size:12px; color:var(--muted); margin-top:15px; display:none;">In attesa che l'host avvii la partita...</p>
-  </div>
-</div>
-
-<!-- TORNEO SETUP SCREEN -->
-<div class="overlay-base overlay-hidden" id="tournSetupOverlay">
-  <div class="setup-box">
-    <div class="setup-eyebrow">Mondiali · Scelta Format</div>
-    <h2>Inizia il Torneo</h2>
-    <p style="font-family:var(--font-mono); font-size:13px; color:var(--muted); margin-bottom:20px;">Quante squadre partecipano al mondiale?</p>
-    <div class="formations-grid">
-      <button class="form-btn tourn-size-btn" data-size="4">4 Squadre</button>
-      <button class="form-btn tourn-size-btn" data-size="8">8 Squadre</button>
-      <button class="form-btn tourn-size-btn active" data-size="16">16 Squadre</button>
-      <button class="form-btn" id="btnBackToDraft" style="border-color:var(--pink-dim); color:var(--pink);">Annulla</button>
-    </div>
-    <button class="btn-primary" id="btnStartTournament">Genera Tabellone</button>
   </div>
 </div>
 
@@ -208,6 +200,7 @@
     </div>
   </div>
 </div>
+
 <script src="script.js"></script>
 </body>
 </html>
