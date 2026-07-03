@@ -275,4 +275,5 @@ body[data-theme="dark"] .player-row:hover { background: rgba(255,255,255,0.05); 
 
 @media (max-width: 600px) {
   body { padding: 16px 10px 50px; } .card { padding: 16px 14px; } .btn-primary { width: 100%; padding: 14px; font-size: 14px; } .draft-header { flex-direction: column; align-items: stretch; } .player-row { padding: 16px 12px; } .player-name { font-size: 15px; } .player-role { font-size: 10px; padding: 3px 5px; } .player-rating { font-size: 15px; } .tourn-header h1 { font-size: 32px; } .sb-team { font-size: 18px; } .sb-score { font-size: 36px; }
+  .slot{ position: absolute; transform: translate(-50%, -50%); width: clamp(35px, 22%, 4px); aspect-ratio: 1 / 1; min-height: 0; background:rgba(0,0,0,0.4); border:2px dashed rgba(255,255,255,0.4); border-radius: 50%; padding: 6px; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; backdrop-filter:blur(2px); transition:border-color .25s ease, background .25s ease, transform .15s ease; z-index: 2; box-sizing: border-box; }
 }
