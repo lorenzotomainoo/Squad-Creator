@@ -128,6 +128,7 @@
     });
   }
 
+  // Logica Pulsanti Home Page
   document.getElementById('btnWorldCup').addEventListener('click', () => {
     isMultiplayer = false;
     homeOverlay.classList.add('overlay-hidden');
@@ -139,6 +140,20 @@
     homeOverlay.classList.add('overlay-hidden');
     mpSetupOverlay.classList.remove('overlay-hidden');
   });
+
+  // FIX: Tasto Torna alla Home dalla schermata Multiplayer
+  document.getElementById('btnBackHome').addEventListener('click', () => {
+    mpSetupOverlay.classList.add('overlay-hidden');
+    homeOverlay.classList.remove('overlay-hidden');
+  });
+
+  // Counter Squadre Create
+  let counter = 12458;
+  const counterEl = document.getElementById('teamsCounter');
+  setInterval(() => {
+    counter += Math.floor(Math.random() * 3) + 1;
+    counterEl.textContent = counter.toLocaleString('it-IT');
+  }, 4000);
 
   document.querySelectorAll('.mp-opt').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -543,9 +558,15 @@
       let stateClass = g ? 'filled' : (isAvailable ? 'available' : '');
       slot.className = 'slot ' + stateClass; slot.dataset.pos = pos; slot.style.left = (x / 2) + '%'; slot.style.top = y + '%';
       const ratingText = isEspertoMode ? '?' : (g ? g.rating : '—');
-      if (g) { slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">${escapeHTML(g.nome)}</div><div class="pos-rating">${ratingText}</div>`; } 
-      else if (isAvailable) { slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">Inserisci</div><div class="pos-rating">—</div>`; slot.addEventListener('click', () => confermaInserimento(pos)); } 
-      else { slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">—</div><div class="pos-rating"></div>`; }
+      
+      if (g) {
+        slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name" title="${escapeHTML(g.nome)}">${escapeHTML(g.nome)}</div><div class="pos-rating">${ratingText}</div>`;
+      } else if (isAvailable) {
+        slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">+</div>`;
+        slot.addEventListener('click', () => confermaInserimento(pos));
+      } else {
+        slot.innerHTML = `<div class="pos-tag">${pos}</div>`;
+      }
       pitchRows.appendChild(slot);
     });
     const filled = Object.values(miaRosa).filter(Boolean).length;
@@ -711,7 +732,6 @@
         }
       });
       
-      // FIX CRITICO: L'HOST MESCOLA LE SQUADRE PRIMA DI INVIARLE, COSÌ TUTTI AVRANNO LO STESSO CALENDARIO
       teams.sort(() => Math.random() - 0.5);
       
       modalOverlay.classList.remove('show'); 
@@ -748,7 +768,6 @@
         const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
         teams.push({ name: `${squadraNome} (${anno})`, rating: rating, isUser: false, id: 'bot'+i });
       }
-      // FIX: Mescoliamo anche per il single player
       teams.sort(() => Math.random() - 0.5);
       startTournament(selectedTournSize, teams); 
     }
@@ -762,9 +781,6 @@
     teams.forEach(t => {
       t.isUser = (t.id === myMpId);
     });
-
-    // FIX CRITICO: RIMOSSO IL SORT DA QUI, VENIVA FATTO IN LOCALE DA OGNI GIOCATORE
-    // teams.sort(() => Math.random() - 0.5);
 
     tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
 
@@ -782,7 +798,7 @@
     
     if (!isMultiplayer || mpState.host) {
       simulateAllAIMatches();
-      if (isMultiplayer) broadcastTournament(); // FIX: Invia subito i risultati AI del primo turno
+      if (isMultiplayer) broadcastTournament();
     }
     renderBracket();
   }
@@ -1039,7 +1055,7 @@
         <div class="summary-stats">
           <div class="stat-item"><div class="stat-value">${tournament.userStats.gf}</div><div class="stat-label">Gol Fatti</div></div>
           <div class="stat-item"><div class="stat-value">${tournament.userStats.gs}</div><div class="stat-label">Gol Subiti</div></div>
-          <div class="stat-item"><div class="stat-value" style="color:${isUserWinner ? 'var(--gold)' : 'var(--pink)'}">${isUserWinner ? 'VITTORIA' : 'SCONFITTA'}</div><div class="stat-label">Risultato</div></div>
+          <div class="stat-item"><div class="stat-value" style="color:${isUserWinner ? 'var(--gold)' : 'var(--accent)'}">${isUserWinner ? 'VITTORIA' : 'SCONFITTA'}</div><div class="stat-label">Risultato</div></div>
         </div>`;
     }
     const trofeoDiv = document.createElement('div'); trofeoDiv.id = 'trophyDiv';

@@ -14,23 +14,25 @@
 </head>
 <body data-theme="dark">
 
-<!-- HOME -->
+<!-- HOME PAGE NUOVA -->
 <div class="overlay-base" id="homeOverlay">
-  <div class="home-box">
-    <div class="brand-eyebrow">Fantasy Draft · Mondiali 1970–2026</div>
-    <h1>Squad <span>Builder</span></h1>
-    <p class="home-desc">Crea la tua rosa dei sogni pescando i giocatori dai più grandi mondiali della storia. Scegli la tua formazione, affronta il tabellone e alza la coppa!</p>
-    <div class="mode-selection">
-      <button class="mode-btn" id="btnWorldCup">
-        <span class="mode-icon">🏆</span>
-        <span class="mode-title">Cammino del Mondiale</span>
-        <span class="mode-sub">Affronta la fase a eliminazione</span>
+  <div class="home-hero">
+    <h1 class="hero-title">DREAM <span>TEAM</span></h1>
+    <p class="hero-subtitle">Tira il dado. Costruisci la tua nazionale dei sogni.</p>
+    
+    <div class="hero-actions">
+      <button class="hero-btn primary" id="btnWorldCup">
+        <span class="hero-btn-title">GIOCA ORA</span>
+        <span class="hero-btn-sub">Affronta il cammino del mondiale</span>
       </button>
-      <button class="mode-btn" id="btnFriends">
-        <span class="mode-icon">👥</span>
-        <span class="mode-title">Gioca con Amici</span>
-        <span class="mode-sub">Crea una stanza privata online</span>
+      <button class="hero-btn" id="btnFriends">
+        <span class="hero-btn-title">CON GLI AMICI</span>
+        <span class="hero-btn-sub">Crea una stanza privata online</span>
       </button>
+    </div>
+
+    <div class="hero-stats">
+      <span id="teamsCounter">12.458</span> squadre create oggi
     </div>
   </div>
 </div>
@@ -83,7 +85,7 @@
     </div>
     <button class="btn-primary" id="btnCreateRoom" style="margin-top:24px;">Crea Stanza</button>
     
-    <div style="margin-top:30px; border-top:1px solid var(--green-line); padding-top:20px;">
+    <div style="margin-top:30px; border-top:1px solid var(--line-color); padding-top:20px;">
       <h2 style="font-size:24px; margin-bottom:10px;">Unisciti a una Stanza</h2>
       <label>Il tuo Nome</label>
       <input type="text" id="joinNameInput" placeholder="Es. Luigi" maxlength="10" style="margin-bottom:10px;">
@@ -91,9 +93,9 @@
       <div class="formations-grid" id="joinFormations" style="margin-bottom:10px;"></div>
       <label>Codice Stanza</label>
       <input type="text" id="joinCodeInput" placeholder="Codice (4 lettere)" maxlength="4" style="text-transform:uppercase; margin-bottom:10px;">
-      <button class="btn-primary" id="btnJoinRoom" style="background:var(--bg-deep); color:var(--green); border:1px solid var(--green); box-shadow:none;">Entra nella Lobby</button>
+      <button class="form-btn" id="btnJoinRoom" style="width:100%; padding:15px; font-size:14px;">Entra nella Lobby</button>
     </div>
-    <button class="btn-primary" id="btnBackHome" style="margin-top:15px; background:transparent; color:var(--muted); border:1px solid var(--muted-2); box-shadow:none;">Torna alla Home</button>
+    <button class="form-btn" id="btnBackHome" style="margin-top:15px; width:100%; padding:15px; font-size:14px;">Torna alla Home</button>
   </div>
 </div>
 
@@ -116,7 +118,7 @@
 <!-- SETTINGS -->
 <div class="fixed-settings">
   <button class="settings-toggle-btn" id="settingsToggle" aria-label="Impostazioni">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1-2-2 2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
   </button>
   <div class="settings-dropdown" id="settingsDropdown">
     <p class="settings-title">Aspetto</p>
@@ -138,7 +140,7 @@
         <div style="display:flex; gap:10px; align-items:center;">
           <span id="draftTimer" class="timer-badge" style="display:none;">30s</span>
           <button class="btn-primary" id="btnPesca" disabled>Pesca turno</button>
-          <button class="btn-primary" id="btnReroll" style="display:none; background:var(--bg-deep); color:var(--green); border:1px solid var(--green-dim); box-shadow:none;">Re-roll (3)</button>
+          <button class="form-btn" id="btnReroll" style="display:none; padding: 12px 18px; font-size: 13px;">Re-roll (3)</button>
         </div>
       </div>
       <p class="extraction-label" id="extractionLabel">Carica i CSV per iniziare</p>
@@ -195,8 +197,8 @@
       <div class="modal-avg"><span class="modal-avg-label">Rating medio</span><span class="modal-avg-value" id="modalAvg">--</span></div>
     </div>
     <div class="modal-actions" id="modalActions">
-      <button class="modal-btn modal-save" id="btnPlayTournament">Gioca il Mondiale</button>
-      <button class="modal-btn modal-close" id="btnNewDraft">Crea Nuova Rosa</button>
+      <button class="btn-primary" id="btnPlayTournament">Gioca il Mondiale</button>
+      <button class="form-btn" id="btnNewDraft">Crea Nuova Rosa</button>
     </div>
   </div>
 </div>
