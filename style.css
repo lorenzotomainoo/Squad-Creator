@@ -158,7 +158,7 @@ body[data-theme="dark"] .file-btn:hover { background: rgba(255,255,255,0.05); }
 .card-title::before{ content:""; width:7px; height:7px; border-radius:50%; background:var(--accent); flex-shrink:0; animation: blink 2s infinite; }
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
-/* Campo da Calcio *
+/* Campo da Calcio */
 .pitch{ position: relative; width: 100%; aspect-ratio: 2 / 3; border-radius:10px; background: repeating-linear-gradient(0deg, var(--pitch-bg-1) 0 5%, var(--pitch-bg-2) 5% 10%); border:1.5px solid var(--line-color); overflow:hidden; }
 .pitch-svg{position:absolute; inset:0; width:100%; height:100%; opacity:.5; pointer-events:none;}
 .pitch-svg line, .pitch-svg circle, .pitch-svg path{ stroke:rgba(255,255,255,0.6); stroke-width:1.4; fill:none; }
