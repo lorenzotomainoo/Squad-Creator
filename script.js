@@ -141,11 +141,103 @@
     mpSetupOverlay.classList.remove('overlay-hidden');
   });
 
-  // FIX: Tasto Torna alla Home dalla schermata Multiplayerr
   document.getElementById('btnBackHome').addEventListener('click', () => {
     mpSetupOverlay.classList.add('overlay-hidden');
     homeOverlay.classList.remove('overlay-hidden');
   });
+
+  // CLASSIFICA LOGIC
+  const leaderboardModal = document.getElementById('leaderboardModal');
+  const teamDetailsModal = document.getElementById('teamDetailsModal');
+  
+  document.getElementById('btnLeaderboard').addEventListener('click', () => {
+    renderLeaderboard();
+    leaderboardModal.classList.add('show');
+  });
+  document.getElementById('closeLeaderboard').addEventListener('click', () => {
+    leaderboardModal.classList.remove('show');
+  });
+  document.getElementById('closeDetails').addEventListener('click', () => {
+    teamDetailsModal.classList.remove('show');
+  });
+
+  function getLeaderboardData() {
+    let data = JSON.parse(localStorage.getItem('squadBuilderLeaderboard')) || [];
+    if (data.length === 0) {
+      // Dati fittizi iniziali se la classifica è vuota
+      data = [
+        { name: "Brazil '70", rating: 94, team: [{pos:'ATT', nome:'Pelé', rating:98}, {pos:'AD', nome:'Jairzinho', rating:93}, {pos:'AS', nome:'Rivellino', rating:92}, {pos:'CC1', nome:'Gerson', rating:91}, {pos:'CC2', nome:'Clodoaldo', rating:90}, {pos:'CC3', nome:'Tostão', rating:92}, {pos:'TD', nome:'Carlos Alberto', rating:93}, {pos:'DC1', nome:'Britto', rating:89}, {pos:'DC2', nome:'Piazza', rating:90}, {pos:'TS', nome:'Everaldo', rating:88}, {pos:'POR', nome:'Félix', rating:87}] },
+        { name: "Spain '10", rating: 92, team: [{pos:'ATT', nome:'Villa', rating:94}, {pos:'AD', nome:'Iniesta', rating:95}, {pos:'AS', nome:'Pedro', rating:89}, {pos:'TRQ', nome:'Xavi', rating:95}, {pos:'MC1', nome:'Busquets', rating:90}, {pos:'MC2', nome:'Alonso', rating:91}, {pos:'TD', nome:'Ramos', rating:92}, {pos:'DC1', nome:'Piqué', rating:91}, {pos:'DC2', nome:'Puyol', rating:92}, {pos:'TS', nome:'Capdevila', rating:88}, {pos:'POR', nome:'Casillas', rating:94}] },
+        { name: "France '98", rating: 91, team: [{pos:'ATT', nome:'Henry', rating:93}, {pos:'AD', nome:'Djorkaeff', rating:90}, {pos:'AS', nome:'Petit', rating:89}, {pos:'CC1', nome:'Zidane', rating:96}, {pos:'CC2', nome:'Deschamps', rating:89}, {pos:'CC3', nome:'Karembeu', rating:88}, {pos:'TD', nome:'Thuram', rating:92}, {pos:'DC1', nome:'Desailly', rating:92}, {pos:'DC2', nome:'Blanc', rating:91}, {pos:'TS', nome:'Lizarazu', rating:90}, {pos:'POR', nome:'Barthez', rating:89}] },
+        { name: "Italy '06", rating: 90, team: [{pos:'ATT', nome:'Toni', rating:91}, {pos:'AD', nome:'Camoranesi', rating:89}, {pos:'AS', nome:'Perrotta', rating:88}, {pos:'CC1', nome:'Pirlo', rating:93}, {pos:'CC2', nome:'Gattuso', rating:89}, {pos:'CC3', nome:'De Rossi', rating:90}, {pos:'TD', nome:'Zambrotta', rating:91}, {pos:'DC1', nome:'Cannavaro', rating:94}, {pos:'DC2', nome:'Materazzi', rating:89}, {pos:'TS', nome:'Grosso', rating:88}, {pos:'POR', nome:'Buffon', rating:95}] },
+        { name: "Germany '14", rating: 89, team: [{pos:'ATT', nome:'Klose', rating:92}, {pos:'AD', nome:'Müller', rating:91}, {pos:'AS', nome:'Özil', rating:92}, {pos:'CC1', nome:'Schweinsteiger', rating:92}, {pos:'CC2', nome:'Kroos', rating:91}, {pos:'CC3', nome:'Khedira', rating:89}, {pos:'TD', nome:'Lahm', rating:93}, {pos:'DC1', nome:'Hummels', rating:90}, {pos:'DC2', nome:'Boateng', rating:89}, {pos:'TS', nome:'Höwedes', rating:87}, {pos:'POR', nome:'Neuer', rating:94}] }
+      ];
+      localStorage.setItem('squadBuilderLeaderboard', JSON.stringify(data));
+    }
+    return data;
+  }
+
+  function saveTeamToLeaderboard(name, rating, team) {
+    let data = getLeaderboardData();
+    data.push({ name, rating, team });
+    data.sort((a, b) => b.rating - a.rating);
+    data = data.slice(0, 5); // Mantiene solo le prime 5
+    localStorage.setItem('squadBuilderLeaderboard', JSON.stringify(data));
+  }
+
+  function renderLeaderboard() {
+    const data = getLeaderboardData();
+    const podium = document.querySelector('.podium');
+    const lowerRanks = document.getElementById('lowerRanks');
+    
+    // Podio (1°, 2°, 3°)
+    if (data[0]) {
+      document.getElementById('podium-0').querySelector('.podium-name').textContent = data[0].name;
+      document.getElementById('podium-0').querySelector('.podium-rating').textContent = data[0].rating;
+    }
+    if (data[1]) {
+      document.getElementById('podium-1').querySelector('.podium-name').textContent = data[1].name;
+      document.getElementById('podium-1').querySelector('.podium-rating').textContent = data[1].rating;
+    }
+    if (data[2]) {
+      document.getElementById('podium-2').querySelector('.podium-name').textContent = data[2].name;
+      document.getElementById('podium-2').querySelector('.podium-rating').textContent = data[2].rating;
+    }
+    
+    // Posizioni 4 e 5
+    lowerRanks.innerHTML = '';
+    for (let i = 3; i < data.length; i++) {
+      const card = document.createElement('div');
+      card.className = 'rank-card';
+      card.innerHTML = `
+        <span class="rank-pos">${i+1}</span>
+        <span class="rank-name">${escapeHTML(data[i].name)}</span>
+        <span class="rank-rating">${data[i].rating}</span>
+      `;
+      card.addEventListener('click', () => showTeamDetails(i));
+      lowerRanks.appendChild(card);
+    }
+  }
+
+  window.showTeamDetails = function(index) {
+    const data = getLeaderboardData();
+    const teamData = data[index];
+    if (!teamData) return;
+
+    document.getElementById('detailsTitle').textContent = teamData.name;
+    document.getElementById('detailsAvg').textContent = teamData.rating;
+    
+    const list = document.getElementById('detailsList');
+    list.innerHTML = '';
+    teamData.team.forEach(p => {
+      const li = document.createElement('li');
+      li.innerHTML = `<span class="mp-pos">${p.pos}</span><span class="mp-name">${escapeHTML(p.nome)}</span><span class="mp-rating">${p.rating}</span>`;
+      list.appendChild(li);
+    });
+    
+    leaderboardModal.classList.remove('show');
+    teamDetailsModal.classList.add('show');
+  };
 
   // Counter Squadre Create
   let counter = 12458;
@@ -711,6 +803,12 @@
     modalAvg.textContent = isEspertoMode ? '?' : userTeamRating; 
     btnPlayTournament.style.display = 'block'; btnNewDraft.textContent = 'Crea Nuova Rosa';
     modalOverlay.classList.add('show'); btnPesca.disabled = true;
+
+    // SALVATAGGIO IN CLASSIFICA
+    if (!isMultiplayer) {
+      const teamArray = LAYOUT.map(item => ({ pos: item.pos, nome: miaRosa[item.pos].nome, rating: miaRosa[item.pos].rating }));
+      saveTeamToLeaderboard(nomeSquadra, userTeamRating, teamArray);
+    }
   }
 
   function checkAllTeamsSubmitted() {
