@@ -141,7 +141,7 @@
     mpSetupOverlay.classList.remove('overlay-hidden');
   });
 
-  // FIX: Tasto Torna alla Home dalla schermata Multiplayer
+  // FIX: Tasto Torna alla Home dalla schermata Multiplayerr
   document.getElementById('btnBackHome').addEventListener('click', () => {
     mpSetupOverlay.classList.add('overlay-hidden');
     homeOverlay.classList.remove('overlay-hidden');
