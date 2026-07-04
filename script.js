@@ -76,6 +76,7 @@
   const sbMinute = document.getElementById('sbMinute');
   const sbPhase = document.getElementById('sbPhase');
   const sbEvents = document.getElementById('sbEvents');
+  const sbBall = document.getElementById('sbBall');
   const penaltiesBox = document.getElementById('penaltiesBox');
   const penTeam1 = document.getElementById('penTeam1');
   const penTeam2 = document.getElementById('penTeam2');
@@ -674,7 +675,7 @@
     }
   });
 
-  // --- LOGICA FASE A GIRONI E KNOCKOUT ----
+  // --- LOGICA FASE A GIRONI E KNOCKOUT ---
   function startTournament(teamsList) {
     builderView.classList.add('hidden'); tournamentView.classList.add('active'); 
     tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer` : `Mondiali`;
@@ -686,8 +687,6 @@
     let numGroups = teams.length / 4;
     for(let i=0; i<numGroups; i++) {
       let groupTeams = teams.slice(i*4, i*4+4).map(t => ({...t, pts: 0, gf: 0, gs: 0, played: 0}));
-      
-      // FIX: Salviamo gli ID delle squadre per non far confondere il sorteggio
       let ids = groupTeams.map(t => t.id);
       tournament.groups.push({
         teams: groupTeams,
@@ -703,15 +702,12 @@
     renderTournament();
   }
 
-  function getTeamById(group, id) {
-    return group.teams.find(t => t.id === id);
-  }
+  function getTeamById(group, id) { return group.teams.find(t => t.id === id); }
 
   function simulateGroupAIMatches() {
     tournament.groups.forEach(group => {
       group.matches.forEach(m => {
-        let t1 = getTeamById(group, m.t1);
-        let t2 = getTeamById(group, m.t2);
+        let t1 = getTeamById(group, m.t1); let t2 = getTeamById(group, m.t2);
         if (!m.played && !t1.isUser && !t2.isUser) {
           let s1 = Math.floor(Math.random() * 4 * (t1.rating / (t1.rating + t2.rating + 1)) * 2.5);
           let s2 = Math.floor(Math.random() * 4 * (t2.rating / (t1.rating + t2.rating + 1)) * 2.5);
@@ -723,8 +719,7 @@
   }
 
   function updateGroupStats(group, t1Id, t2Id, s1, s2) {
-    let t1 = getTeamById(group, t1Id);
-    let t2 = getTeamById(group, t2Id);
+    let t1 = getTeamById(group, t1Id); let t2 = getTeamById(group, t2Id);
     t1.gf += s1; t1.gs += s2; t1.played++;
     t2.gf += s2; t2.gs += s1; t2.played++;
     if (s1 > s2) { t1.pts += 3; t1.wins = (t1.wins||0)+1; t2.losses = (t2.losses||0)+1; }
@@ -745,7 +740,6 @@
     tournament.groups.forEach((group, idx) => {
       const card = document.createElement('div');
       card.className = 'group-card';
-      // Creiamo una copia per il sort senza toccare l'array originale degli ID
       let sortedTeams = [...group.teams].sort((a,b) => b.pts - a.pts || (b.gf-b.gs) - (a.gf-a.gs) || b.gf - a.gf);
       
       let html = `<div class="group-title">Girone ${String.fromCharCode(65+idx)}</div>`;
@@ -760,8 +754,7 @@
       if (userTeam) {
         const userMatch = group.matches.find(m => !m.played && (getTeamById(group, m.t1).isUser || getTeamById(group, m.t2).isUser));
         if (userMatch) {
-          const t1 = getTeamById(group, userMatch.t1);
-          const t2 = getTeamById(group, userMatch.t2);
+          const t1 = getTeamById(group, userMatch.t1); const t2 = getTeamById(group, userMatch.t2);
           const oppName = t1.isUser ? t2.name : t1.name;
           html += `<button class="play-group-btn" onclick="playGroupMatch(${idx})">Gioca vs ${escapeHTML(oppName)}</button>`;
         }
@@ -816,11 +809,7 @@
     let allPlayed = true;
     tournament.groups.forEach(g => { if (g.matches.some(m => !m.played)) allPlayed = false; });
     
-    if (allPlayed) {
-      startKnockoutPhase();
-    } else {
-      renderTournament();
-    }
+    if (allPlayed) { startKnockoutPhase(); } else { renderTournament(); }
     broadcastTournament();
   }
 
@@ -892,18 +881,31 @@
     updateScoreboard(score1, score2);
     sbMinute.textContent = "1'"; sbPhase.textContent = "Primo Tempo"; sbEvents.innerHTML = '';
     penaltiesBox.classList.remove('show');
+    sbBall.style.left = '50%'; // Reset pallina al centro
+    
     const r1 = match.team1.rating, r2 = match.team2.rating;
     const prob1 = (r1 / (r1 + r2)) * 0.045; 
     const prob2 = (r2 / (r1 + r2)) * 0.045;
     let minute = 0;
+    let possession = 0; // -45 to 45 for left/right offset
+    
     matchInterval = setInterval(() => {
       minute++; sbMinute.textContent = minute + "'";
       if (minute === 46) sbPhase.textContent = "Secondo Tempo";
+      
+      // Animazione Pallina: si sposta in base alle probabilità
+      if (Math.random() < prob1 / (prob1 + prob2)) possession += Math.random() * 8;
+      else possession -= Math.random() * 8;
+      possession = Math.max(-45, Math.min(45, possession));
+      sbBall.style.left = `calc(50% + ${possession}%)`;
+      
       if (Math.random() < prob1) { 
         score1++; updateScoreboard(score1, score2); 
         const scorer = match.team1.roster[Math.floor(Math.random()*11)];
         triggerGoalAnimation(match.team1.name, scorer.nome, minute); 
         addGoalEvent(match.team1.name, minute); 
+        possession = 20; // Sposta la palla verso la squadra che ha fatto gol
+        sbBall.style.left = `calc(50% + ${possession}%)`;
         if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
         if (match.team1.isUser) tournament.userStats.gf++; if (match.team2.isUser) tournament.userStats.gs++;
       }
@@ -912,6 +914,8 @@
         const scorer = match.team2.roster[Math.floor(Math.random()*11)];
         triggerGoalAnimation(match.team2.name, scorer.nome, minute); 
         addGoalEvent(match.team2.name, minute); 
+        possession = -20; // Sposta la palla verso la squadra che ha fatto gol
+        sbBall.style.left = `calc(50% + ${possession}%)`;
         if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
         if (match.team2.isUser) tournament.userStats.gf++; if (match.team1.isUser) tournament.userStats.gs++;
       }
@@ -1020,9 +1024,7 @@
       });
     } else if (tournament.groups) {
       tournament.groups.forEach(group => {
-        group.teams.forEach(team => {
-          team.isUser = (team.id === myMpId);
-        });
+        group.teams.forEach(team => { team.isUser = (team.id === myMpId); });
       });
     }
     renderTournament();
