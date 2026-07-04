@@ -164,7 +164,6 @@
   function getLeaderboardData() {
     let data = JSON.parse(localStorage.getItem('squadBuilderLeaderboard')) || [];
     if (data.length === 0) {
-      // Dati fittizi iniziali se la classifica è vuota
       data = [
         { name: "Brazil '70", rating: 94, team: [{pos:'ATT', nome:'Pelé', rating:98}, {pos:'AD', nome:'Jairzinho', rating:93}, {pos:'AS', nome:'Rivellino', rating:92}, {pos:'CC1', nome:'Gerson', rating:91}, {pos:'CC2', nome:'Clodoaldo', rating:90}, {pos:'CC3', nome:'Tostão', rating:92}, {pos:'TD', nome:'Carlos Alberto', rating:93}, {pos:'DC1', nome:'Britto', rating:89}, {pos:'DC2', nome:'Piazza', rating:90}, {pos:'TS', nome:'Everaldo', rating:88}, {pos:'POR', nome:'Félix', rating:87}] },
         { name: "Spain '10", rating: 92, team: [{pos:'ATT', nome:'Villa', rating:94}, {pos:'AD', nome:'Iniesta', rating:95}, {pos:'AS', nome:'Pedro', rating:89}, {pos:'TRQ', nome:'Xavi', rating:95}, {pos:'MC1', nome:'Busquets', rating:90}, {pos:'MC2', nome:'Alonso', rating:91}, {pos:'TD', nome:'Ramos', rating:92}, {pos:'DC1', nome:'Piqué', rating:91}, {pos:'DC2', nome:'Puyol', rating:92}, {pos:'TS', nome:'Capdevila', rating:88}, {pos:'POR', nome:'Casillas', rating:94}] },
@@ -181,16 +180,12 @@
     let data = getLeaderboardData();
     data.push({ name, rating, team });
     data.sort((a, b) => b.rating - a.rating);
-    data = data.slice(0, 5); // Mantiene solo le prime 5
+    data = data.slice(0, 5);
     localStorage.setItem('squadBuilderLeaderboard', JSON.stringify(data));
   }
 
   function renderLeaderboard() {
     const data = getLeaderboardData();
-    const podium = document.querySelector('.podium');
-    const lowerRanks = document.getElementById('lowerRanks');
-    
-    // Podio (1°, 2°, 3°)
     if (data[0]) {
       document.getElementById('podium-0').querySelector('.podium-name').textContent = data[0].name;
       document.getElementById('podium-0').querySelector('.podium-rating').textContent = data[0].rating;
@@ -203,17 +198,12 @@
       document.getElementById('podium-2').querySelector('.podium-name').textContent = data[2].name;
       document.getElementById('podium-2').querySelector('.podium-rating').textContent = data[2].rating;
     }
-    
-    // Posizioni 4 e 5
+    const lowerRanks = document.getElementById('lowerRanks');
     lowerRanks.innerHTML = '';
     for (let i = 3; i < data.length; i++) {
       const card = document.createElement('div');
       card.className = 'rank-card';
-      card.innerHTML = `
-        <span class="rank-pos">${i+1}</span>
-        <span class="rank-name">${escapeHTML(data[i].name)}</span>
-        <span class="rank-rating">${data[i].rating}</span>
-      `;
+      card.innerHTML = `<span class="rank-pos">${i+1}</span><span class="rank-name">${escapeHTML(data[i].name)}</span><span class="rank-rating">${data[i].rating}</span>`;
       card.addEventListener('click', () => showTeamDetails(i));
       lowerRanks.appendChild(card);
     }
@@ -223,10 +213,8 @@
     const data = getLeaderboardData();
     const teamData = data[index];
     if (!teamData) return;
-
     document.getElementById('detailsTitle').textContent = teamData.name;
     document.getElementById('detailsAvg').textContent = teamData.rating;
-    
     const list = document.getElementById('detailsList');
     list.innerHTML = '';
     teamData.team.forEach(p => {
@@ -234,12 +222,10 @@
       li.innerHTML = `<span class="mp-pos">${p.pos}</span><span class="mp-name">${escapeHTML(p.nome)}</span><span class="mp-rating">${p.rating}</span>`;
       list.appendChild(li);
     });
-    
     leaderboardModal.classList.remove('show');
     teamDetailsModal.classList.add('show');
   };
 
-  // Counter Squadre Create
   let counter = 12458;
   const counterEl = document.getElementById('teamsCounter');
   setInterval(() => {
@@ -262,6 +248,19 @@
     }); 
   });
 
+  // FUNZIONE PER PESCARE SQUADRE DAL DATABASE
+  function getRandomTeamFromDatabase() {
+    const anni = Object.keys(database);
+    if (anni.length === 0) return { name: "Bot Team", rating: 75 };
+    const anno = anni[Math.floor(Math.random() * anni.length)];
+    const squadre = Object.keys(database[anno]);
+    const squadraNome = squadre[Math.floor(Math.random() * squadre.length)];
+    const giocatori = database[anno][squadraNome];
+    const top11 = giocatori.slice(0, 11);
+    const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
+    return { name: `${squadraNome} ${anno}`, rating: rating };
+  }
+
   document.getElementById('btnCreateRoom').addEventListener('click', () => {
     const hostName = document.getElementById('hostNameInput').value.trim() || "Host";
     const hostForm = document.querySelector('#hostFormations .active').dataset.form;
@@ -279,8 +278,20 @@
     mpState.time = time;
     mpState.mode = mode;
     mpState.code = Math.random().toString(36).substr(2, 4).toUpperCase();
+    
+    // L'HOST GENERA LE SQUADRE DEI BOT UNA VOLTA SOLA E LE SALVA NELLO STATO
     mpState.players = [{ id: myMpId, name: hostName, formation: hostForm, isBot: false, ready: true }];
-    for(let i=1; i<mpState.teams; i++) mpState.players.push({ id: 'bot'+i, name: `Bot ${i}`, isBot: true, ready: true, formation: '433' });
+    for(let i=1; i<mpState.teams; i++) {
+      const teamData = getRandomTeamFromDatabase();
+      mpState.players.push({ 
+        id: 'bot'+i, 
+        name: teamData.name, 
+        rating: teamData.rating, 
+        isBot: true, 
+        ready: true, 
+        formation: '433' 
+      });
+    }
 
     showToast('Creazione stanza in corso...');
     peer = new Peer('squadbuilder_' + mpState.code);
@@ -365,11 +376,21 @@
 
   function handleHostMessage(msg, conn) {
     if (msg.type === 'request_state') {
+      // Invia lo stato attuale (che contiene già le squadre dei bot generate all'inizio)
       sendSafe(conn, { type: 'state_sync', state: mpState });
     } else if (msg.type === 'player_join') {
       const botIdx = mpState.players.findIndex(p => p.isBot);
       if (botIdx !== -1) {
-        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false };
+        // Sostituisce il bot con il giocatore, ma ne mantiene il nome e il rating assegnati
+        const botData = mpState.players[botIdx];
+        mpState.players[botIdx] = { 
+          id: msg.id, 
+          name: msg.name, // Il giocatore sceglie il suo nome
+          formation: msg.formation, 
+          isBot: false, 
+          ready: false, 
+          rating: botData.rating // Mantiene il rating del bot che sostituisce
+        };
         playerConnections[msg.id] = conn; 
         renderLobbyList(); 
         showLobby(); 
@@ -389,11 +410,7 @@
     } else if (msg.type === 'match_result') {
       const match = tournament.rounds[msg.rIdx].matches[msg.mIdx];
       if (!match) return; 
-      
-      if (match.played) {
-        broadcastTournament();
-        return;
-      }
+      if (match.played) { broadcastTournament(); return; }
       
       let winner;
       if (msg.score1 > msg.score2) winner = match.team1;
@@ -420,12 +437,12 @@
       const oldId = p.id;
       p.isBot = true;
       p.id = 'bot_dc_' + Date.now();
-      p.name = p.name + " (Bot)";
+      p.name = p.name + " (AI)";
       p.ready = true;
       
       delete playerConnections[playerId];
       
-      showToast(`${p.name.replace(" (Bot)", "")} si è disconnesso. Sarà sostituito da un Bot.`);
+      showToast(`${p.name.replace(" (AI)", "")} si è disconnesso. Sarà sostituito dalla AI.`);
       
       if (tournament) {
         tournament.rounds.forEach(round => {
@@ -447,7 +464,7 @@
   function handleClientMessage(msg) {
     if (msg.type === 'state_sync' || msg.type === 'start_draft') {
       const myHostStatus = mpState.host; 
-      mpState = msg.state;
+      mpState = msg.state; // I client ricevono lo stato con le squadre già generate dall'host
       mpState.host = myHostStatus; 
       if (msg.type === 'state_sync') showLobby();
       else if (msg.type === 'start_draft') startMpDraft();
@@ -513,7 +530,7 @@
           <div class="lobby-name">${escapeHTML(p.name)}</div>
           <div class="lobby-form">${p.formation.split('').join('-')}</div>
         </div>
-        <div class="lobby-status ${p.ready ? 'pronto' : ''}">${p.isBot ? 'Bot' : (p.ready ? 'Pronto' : 'In Attesa')}</div>
+        <div class="lobby-status ${p.ready ? 'pronto' : ''}">${p.isBot ? 'CPU' : (p.ready ? 'Pronto' : 'In Attesa')}</div>
       `;
       list.appendChild(item);
     });
@@ -521,7 +538,7 @@
 
   function startMpDraft() {
     isEspertoMode = (mpState.mode === 'esperto');
-    const me = mpState.players.find(p => p.id === myMpId) || { name: 'Bot', formation: '433' };
+    const me = mpState.players.find(p => p.id === myMpId) || { name: 'CPU', formation: '433' };
     nomeSquadra = me.name;
     currentFormation = me.formation;
     LAYOUT = FORMATIONS[currentFormation].layout;
@@ -621,9 +638,7 @@
     for (let i = 1; i < lines.length; i++) {
       const cols = splitCSVLine(lines[i]);
       const obj = {};
-      headers.forEach((h, idx) => {
-        obj[h] = cols[idx] !== undefined ? cols[idx] : '';
-      });
+      headers.forEach((h, idx) => { obj[h] = cols[idx] !== undefined ? cols[idx] : ''; });
       rows.push(obj);
     }
     return rows;
@@ -650,15 +665,9 @@
       let stateClass = g ? 'filled' : (isAvailable ? 'available' : '');
       slot.className = 'slot ' + stateClass; slot.dataset.pos = pos; slot.style.left = (x / 2) + '%'; slot.style.top = y + '%';
       const ratingText = isEspertoMode ? '?' : (g ? g.rating : '—');
-      
-      if (g) {
-        slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name" title="${escapeHTML(g.nome)}">${escapeHTML(g.nome)}</div><div class="pos-rating">${ratingText}</div>`;
-      } else if (isAvailable) {
-        slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">+</div>`;
-        slot.addEventListener('click', () => confermaInserimento(pos));
-      } else {
-        slot.innerHTML = `<div class="pos-tag">${pos}</div>`;
-      }
+      if (g) { slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name" title="${escapeHTML(g.nome)}">${escapeHTML(g.nome)}</div><div class="pos-rating">${ratingText}</div>`; } 
+      else if (isAvailable) { slot.innerHTML = `<div class="pos-tag">${pos}</div><div class="pos-name">+</div>`; slot.addEventListener('click', () => confermaInserimento(pos)); } 
+      else { slot.innerHTML = `<div class="pos-tag">${pos}</div>`; }
       pitchRows.appendChild(slot);
     });
     const filled = Object.values(miaRosa).filter(Boolean).length;
@@ -670,50 +679,26 @@
   function pescaTurno() {
     if (Object.values(miaRosa).every(v => v !== null)){ showToast('La rosa è già completa!'); return; }
     const anni = Object.keys(database); if (anni.length === 0) return;
-    
-    let squadraValida = false;
-    let tentativi = 0;
-    let anno, squadre, squadra, giocatori;
-
+    let squadraValida = false, tentativi = 0, anno, squadre, squadra, giocatori;
     while (!squadraValida && tentativi < 100) {
       anno = anni[Math.floor(Math.random() * anni.length)]; 
       squadre = Object.keys(database[anno]);
       squadra = squadre[Math.floor(Math.random() * squadre.length)]; 
       giocatori = database[anno][squadra];
-      
-      const hasValidPlayer = giocatori.some(g => 
-        Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo))
-      );
-      
-      if (hasValidPlayer) {
-        squadraValida = true;
-      } else {
-        tentativi++;
-      }
+      const hasValidPlayer = giocatori.some(g => Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo)));
+      if (hasValidPlayer) squadraValida = true; else tentativi++;
     }
-
     turnoCorrente = { anno, squadra, giocatori }; giocatoreScelto = null; posizioniDisponibili = [];
     extractionLabel.innerHTML = `${escapeHTML(squadra)} <span class="year">· ${escapeHTML(anno)}</span>`;
     renderPlayerList(giocatori); btnPesca.disabled = true; renderPitch();
-    
     if (isMultiplayer) startPickTimer();
-
-    if (rerollsLeft > 0) {
-      btnReroll.style.display = 'inline-block';
-      btnReroll.textContent = `Re-roll (${rerollsLeft})`;
-      btnReroll.disabled = false;
-    } else {
-      btnReroll.style.display = 'none';
-    }
+    if (rerollsLeft > 0) { btnReroll.style.display = 'inline-block'; btnReroll.textContent = `Re-roll (${rerollsLeft})`; btnReroll.disabled = false; } 
+    else { btnReroll.style.display = 'none'; }
   }
 
   btnPesca.addEventListener('click', pescaTurno);
 
-  btnReroll.addEventListener('click', () => {
-    if (rerollsLeft <= 0) return;
-    rerollsLeft--;
-    pescaTurno();
-  });
+  btnReroll.addEventListener('click', () => { if (rerollsLeft <= 0) return; rerollsLeft--; pescaTurno(); });
 
   function renderPlayerList(giocatori){
     emptyState.style.display = 'none'; playerList.style.display = 'flex'; playerList.innerHTML = '';
@@ -730,22 +715,14 @@
   function selezionaGiocatore(idx, rowEl){
     if (!turnoCorrente) return;
     if (giocatoreScelto === turnoCorrente.giocatori[idx]) { annullaSelezione(); return; }
-    if (rowEl) {
-      Array.from(playerList.children).forEach(r => r.classList.remove('selected')); 
-      rowEl.classList.add('selected');
-    }
+    if (rowEl) { Array.from(playerList.children).forEach(r => r.classList.remove('selected')); rowEl.classList.add('selected'); }
     const giocatore = turnoCorrente.giocatori[idx];
     posizioniDisponibili = Object.keys(COMPATIBILITA).filter(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(giocatore.ruolo));
     if (posizioniDisponibili.length === 0){ showToast(`Nessuna posizione compatibile.`); return; }
     giocatoreScelto = giocatore;
     extractionLabel.innerHTML = `${escapeHTML(giocatore.nome)} <span class="hint">Tocca un ruolo verde!</span>`;
     renderPitch();
-
-    if (window.innerWidth < 880) {
-      setTimeout(() => {
-        pitchCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 300);
-    }
+    if (window.innerWidth < 880) { setTimeout(() => { pitchCard.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300); }
   }
 
   function annullaSelezione() { giocatoreScelto = null; posizioniDisponibili = []; Array.from(playerList.children).forEach(r => r.classList.remove('selected')); if (turnoCorrente) extractionLabel.innerHTML = `${escapeHTML(turnoCorrente.squadra)} <span class="year">· ${escapeHTML(turnoCorrente.anno)}</span>`; renderPitch(); }
@@ -753,20 +730,11 @@
   function confermaInserimento(pos) {
     if (!giocatoreScelto) return;
     clearInterval(pickTimerInterval);
-    draftTimer.style.display = 'none';
-    draftTimer.classList.remove('urgent');
-    btnReroll.style.display = 'none';
-    
+    draftTimer.style.display = 'none'; draftTimer.classList.remove('urgent'); btnReroll.style.display = 'none';
     miaRosa[pos] = giocatoreScelto; giocatoreScelto = null; posizioniDisponibili = []; turnoCorrente = null;
     playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
     extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; renderPitch();
-    
-    if (window.innerWidth < 880) {
-      setTimeout(() => {
-        draftHeader.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }, 300);
-    }
-
+    if (window.innerWidth < 880) { setTimeout(() => { draftHeader.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300); }
     if (Object.values(miaRosa).every(v => v !== null)) mostraRisultatoFinale();
     else btnPesca.disabled = false;
   }
@@ -775,36 +743,24 @@
     if (isMultiplayer) {
       const me = mpState.players.find(p => p.id === myMpId);
       if (me) { me.team = miaRosa; me.rating = userTeamRating; }
-      
       let allDone = false;
       if (mpState.host) {
         allDone = mpState.players.every(p => p.isBot || (p.team && p.rating));
-        if (allDone) {
-          checkAllTeamsSubmitted(); 
-          return; 
-        }
+        if (allDone) { checkAllTeamsSubmitted(); return; }
       } else {
         sendSafe(hostConnection, { type: 'team_submitted', id: myMpId, team: miaRosa, rating: userTeamRating });
       }
-
-      modalEyebrow.textContent = "In Attesa"; 
-      modalTitle.textContent = "Rosa Completa!";
-      modalContent.style.display = 'none'; 
-      btnPlayTournament.style.display = 'none'; 
-      btnNewDraft.textContent = 'Esci';
-      modalOverlay.classList.add('show'); 
-      btnPesca.disabled = true;
+      modalEyebrow.textContent = "In Attesa"; modalTitle.textContent = "Rosa Completa!";
+      modalContent.style.display = 'none'; btnPlayTournament.style.display = 'none'; btnNewDraft.textContent = 'Esci';
+      modalOverlay.classList.add('show'); btnPesca.disabled = true;
       return;
     }
-
     modalEyebrow.textContent = "Fine Draft"; modalTitle.textContent = "Rosa Completa!"; modalTitle.classList.remove('champion');
     modalContent.style.display = 'block'; modalList.innerHTML = '';
     LAYOUT.forEach(item => { const g = miaRosa[item.pos]; const li = document.createElement('li'); li.innerHTML = `<span class="mp-pos">${item.pos}</span><span class="mp-name">${escapeHTML(g.nome)}</span><span class="mp-rating">${isEspertoMode ? '?' : g.rating}</span>`; modalList.appendChild(li); });
     modalAvg.textContent = isEspertoMode ? '?' : userTeamRating; 
     btnPlayTournament.style.display = 'block'; btnNewDraft.textContent = 'Crea Nuova Rosa';
     modalOverlay.classList.add('show'); btnPesca.disabled = true;
-
-    // SALVATAGGIO IN CLASSIFICA
     if (!isMultiplayer) {
       const teamArray = LAYOUT.map(item => ({ pos: item.pos, nome: miaRosa[item.pos].nome, rating: miaRosa[item.pos].rating }));
       saveTeamToLeaderboard(nomeSquadra, userTeamRating, teamArray);
@@ -815,19 +771,10 @@
     if (!mpState.host) return;
     const allDone = mpState.players.every(p => p.isBot || (p.team && p.rating));
     if (allDone) {
+      // FIX CRITICO: Le squadre per il tabellone vengono prese ESCLUSIVAMENTE dallo stato condiviso (mpState.players)
+      // Nessuna generazione casuale qui, tutti usano gli stessi dati.
       const teams = mpState.players.map(p => {
-        if (p.isBot) {
-          const anni = Object.keys(database);
-          const anno = anni[Math.floor(Math.random() * anni.length)];
-          const squadreAnno = Object.keys(database[anno]); 
-          const squadraNome = squadreAnno[Math.floor(Math.random() * squadreAnno.length)];
-          const giocatori = database[anno][squadraNome]; 
-          const top11 = giocatori.slice(0, 11);
-          const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
-          return { name: p.name, rating: rating, isUser: false, id: p.id };
-        } else {
-          return { name: p.name, rating: p.rating, isUser: (p.id === myMpId), id: p.id };
-        }
+        return { name: p.name, rating: p.rating, isUser: (p.id === myMpId), id: p.id };
       });
       
       teams.sort(() => Math.random() - 0.5);
@@ -841,7 +788,6 @@
   btnNewDraft.addEventListener('click', () => {
     modalOverlay.classList.remove('show');
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
-    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove();
     initRosa(); renderPitch(); extractionLabel.textContent = 'Pronto: premi "Pesca turno"';
     btnPesca.disabled = Object.keys(database).length === 0;
     builderView.classList.remove('hidden'); tournamentView.classList.remove('active'); tournament = null;
@@ -855,16 +801,11 @@
     if (isMultiplayer && mpState.host) {
       checkAllTeamsSubmitted(); 
     } else if (!isMultiplayer) {
+      // Single player: genera le squadre bot qui
       const teams = [{ name: nomeSquadra, rating: userTeamRating, isUser: true, id: myMpId }];
-      const anni = Object.keys(database);
       for (let i = 1; i < selectedTournSize; i++) {
-        const anno = anni[Math.floor(Math.random() * anni.length)]; 
-        const squadreAnno = Object.keys(database[anno]);
-        const squadraNome = squadreAnno[Math.floor(Math.random() * squadreAnno.length)]; 
-        const giocatori = database[anno][squadraNome];
-        const top11 = giocatori.slice(0, 11); 
-        const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
-        teams.push({ name: `${squadraNome} (${anno})`, rating: rating, isUser: false, id: 'bot'+i });
+        const teamData = getRandomTeamFromDatabase();
+        teams.push({ name: teamData.name, rating: teamData.rating, isUser: false, id: 'bot'+i });
       }
       teams.sort(() => Math.random() - 0.5);
       startTournament(selectedTournSize, teams); 
@@ -875,13 +816,8 @@
     builderView.classList.add('hidden'); tournamentView.classList.add('active'); 
     tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer (${size})` : `Mondiali a ${size} Squadre`;
     const teams = teamsList || [];
-    
-    teams.forEach(t => {
-      t.isUser = (t.id === myMpId);
-    });
-
+    teams.forEach(t => { t.isUser = (t.id === myMpId); });
     tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
-
     let round1Matches = [];
     for (let i = 0; i < teams.length; i += 2) { round1Matches.push({ team1: teams[i], team2: teams[i+1], score1: null, score2: null, pens1: null, pens2: null, winner: null, played: false }); }
     function getRoundName(t) { if (t == 2) return "Finale"; if (t == 4) return "Semifinali"; if (t == 8) return "Quarti di Finale"; if (t == 16) return "Ottavi di Finale"; return "Turno"; }
@@ -893,7 +829,6 @@
       tournament.rounds.push({ name: getRoundName(nextMatches.length * 2), matches: nextMatches });
       prevMatches = nextMatches;
     }
-    
     if (!isMultiplayer || mpState.host) {
       simulateAllAIMatches();
       if (isMultiplayer) broadcastTournament();
@@ -940,7 +875,8 @@
     sbMinute.textContent = "1'"; sbPhase.textContent = "Primo Tempo"; sbEvents.innerHTML = '';
     penaltiesBox.classList.remove('show');
     const r1 = match.team1.rating, r2 = match.team2.rating;
-    const prob1 = (r1 / (r1 + r2)) * 0.035; const prob2 = (r2 / (r1 + r2)) * 0.035;
+    const prob1 = (r1 / (r1 + r2)) * 0.045; 
+    const prob2 = (r2 / (r1 + r2)) * 0.045;
     let minute = 0;
     matchInterval = setInterval(() => {
       minute++; sbMinute.textContent = minute + "'";
@@ -961,12 +897,14 @@
   function startPenalties(match, score1, score2) {
     penaltiesBox.classList.add('show');
     let p1 = 0, p2 = 0; let t1Shots = [], t2Shots = []; let turn = 0; 
+    const penProb1 = Math.min(0.85, Math.max(0.25, 0.5 + (match.team1.rating - 75) * 0.03));
+    const penProb2 = Math.min(0.85, Math.max(0.25, 0.5 + (match.team2.rating - 75) * 0.03));
     const penInterval = setInterval(() => {
       if (turn === 0) {
-        const made = Math.random() < (match.team1.rating / (match.team1.rating + 80));
+        const made = Math.random() < penProb1;
         t1Shots.push(made); if (made) p1++; renderPenalties(penTeam1, match.team1.name, t1Shots); turn = 1;
       } else {
-        const made = Math.random() < (match.team2.rating / (match.team2.rating + 80));
+        const made = Math.random() < penProb2;
         t2Shots.push(made); if (made) p2++; renderPenalties(penTeam2, match.team2.name, t2Shots); turn = 0;
         let isOver = false;
         if (t1Shots.length >= 5 && t2Shots.length >= 5 && p1 !== p2) isOver = true;
@@ -1002,10 +940,16 @@
           if (!m.played && m.team1 && m.team2) {
             const isAIvAI = m.team1.id.startsWith('bot') && m.team2.id.startsWith('bot');
             if (isAIvAI) {
-              let s1 = Math.floor(Math.random() * 4 * (m.team1.rating / (m.team1.rating + m.team2.rating + 1)) * 2);
-              let s2 = Math.floor(Math.random() * 4 * (m.team2.rating / (m.team1.rating + m.team2.rating + 1)) * 2);
+              let s1 = Math.floor(Math.random() * 4 * (m.team1.rating / (m.team1.rating + m.team2.rating + 1)) * 2.5);
+              let s2 = Math.floor(Math.random() * 4 * (m.team2.rating / (m.team1.rating + m.team2.rating + 1)) * 2.5);
               let p1 = null, p2 = null;
-              if (s1 === s2) { p1 = Math.floor(Math.random() * 3) + 3; p2 = p1; while(p1 === p2) p2 = Math.floor(Math.random() * 3) + 3; }
+              if (s1 === s2) { 
+                let pp1 = 0, pp2 = 0;
+                const prob1 = Math.min(0.85, Math.max(0.25, 0.5 + (m.team1.rating - 75) * 0.03));
+                const prob2 = Math.min(0.85, Math.max(0.25, 0.5 + (m.team2.rating - 75) * 0.03));
+                while(true) { if (Math.random() < prob1) pp1++; if (Math.random() < prob2) pp2++; if (pp1 !== pp2) break; }
+                p1 = pp1; p2 = pp2; 
+              }
               m.score1 = s1; m.score2 = s2; m.pens1 = p1; m.pens2 = p2;
               m.winner = (s1 > s2) ? m.team1 : (s2 > s1) ? m.team2 : (p1 > p2) ? m.team1 : m.team2;
               m.played = true;
@@ -1030,7 +974,6 @@
   function applyTournamentState(t) {
     const myStats = tournament ? (tournament.userStats || { gf: 0, gs: 0, wins: 0, losses: 0 }) : { gf: 0, gs: 0, wins: 0, losses: 0 };
     const myEliminated = tournament ? (tournament.userEliminated || false) : false;
-    
     if (pendingMatchResult) {
       const hostMatch = t.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
       if (hostMatch && hostMatch.played) {
@@ -1040,16 +983,13 @@
         sendSafe(hostConnection, { type: 'match_result', rIdx: pendingMatchResult.rIdx, mIdx: pendingMatchResult.mIdx, score1: pendingMatchResult.score1, score2: pendingMatchResult.score2, pens1: pendingMatchResult.pens1, pens2: pendingMatchResult.pens2 });
       }
     }
-
     tournament = t;
     tournament.userStats = myStats;
     tournament.userEliminated = myEliminated;
-    
     tournament.rounds.forEach((round, rIdx) => {
       round.matches.forEach((match, mIdx) => {
         if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
         if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
-        
         if (pendingMatchResult && rIdx === pendingMatchResult.rIdx && mIdx === pendingMatchResult.mIdx && !match.played) {
           match.played = true;
           match.score1 = pendingMatchResult.score1;
@@ -1062,7 +1002,6 @@
         }
       });
     });
-
     renderBracket();
     if (checkTournamentEnd()) return;
   }
@@ -1081,24 +1020,15 @@
     if (s1 > s2) winner = match.team1;
     else if (s2 > s1) winner = match.team2;
     else winner = (p1 > p2) ? match.team1 : match.team2;
-
     match.score1 = s1; match.score2 = s2; match.pens1 = p1; match.pens2 = p2; match.winner = winner; match.played = true;
-
     const userWasPlaying = match.team1.isUser || match.team2.isUser;
     if (userWasPlaying) {
       if (winner.isUser) tournament.userStats.wins++;
-      else { 
-        tournament.userStats.losses++; 
-        tournament.userEliminated = true; 
-        showEliminatedScreen();
-      }
+      else { tournament.userStats.losses++; tournament.userEliminated = true; }
     }
-
     const { rIdx, mIdx } = currentMatchData;
-
     setTimeout(() => {
       matchSimOverlay.classList.remove('show');
-
       if (isMultiplayer) {
         if (mpState.host) {
           advanceTournament(rIdx, mIdx, winner);
@@ -1109,7 +1039,6 @@
         } else {
           pendingMatchResult = { rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 };
           sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
-          
           pendingMatchInterval = setInterval(() => {
             sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
           }, 3000);
@@ -1123,27 +1052,9 @@
     }, 2000);
   }
 
-  function showEliminatedScreen() {
-    const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
-    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove();
-    
-    modalEyebrow.textContent = "Eliminato";
-    modalTitle.textContent = "Sei fuori dal Mondiale!";
-    modalContent.style.display = 'none'; 
-    btnPlayTournament.style.display = 'none'; 
-    btnNewDraft.textContent = 'Esci';
-    
-    const elDiv = document.createElement('div');
-    elDiv.id = 'eliminatedDiv';
-    elDiv.innerHTML = `<div style="font-size:40px; margin-bottom:20px;">😞</div><p style="margin-bottom: 20px; color: var(--muted); font-family: var(--font-mono); font-size: 13px;">In attesa che il torneo finisca per scoprire il vincitore...</p>`;
-    modalContent.parentNode.insertBefore(elDiv, modalContent);
-    modalOverlay.classList.add('show');
-  }
-
   function showChampion(winner) {
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
     const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove(); 
-    
     modalEyebrow.textContent = "Fine Mondiale"; modalTitle.textContent = "Campione del Mondo!"; modalTitle.classList.add('champion');
     modalContent.style.display = 'none'; btnPlayTournament.style.display = 'none'; btnNewDraft.textContent = 'Torna alla Home';
     let summaryHTML = `<div style="font-size:60px; margin-bottom:20px;">🏆</div><h2 class="champion" style="margin-bottom: 20px;">${escapeHTML(winner.name)}</h2>`;
