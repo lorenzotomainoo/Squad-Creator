@@ -674,7 +674,7 @@
     }
   });
 
-  // --- LOGICA FASE A GIRONI E KNOCKOUT ---
+  // --- LOGICA FASE A GIRONI E KNOCKOUT ----
   function startTournament(teamsList) {
     builderView.classList.add('hidden'); tournamentView.classList.add('active'); 
     tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer` : `Mondiali`;
