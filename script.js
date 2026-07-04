@@ -18,6 +18,7 @@
   let userTeamRating = 75;
   let isEspertoMode = false;
   let isMultiplayer = false;
+  let isTurnMode = false;
   let rerollsLeft = 3;
 
   let turnoCorrente = null;
@@ -29,6 +30,8 @@
   const setupOverlay = document.getElementById('setupOverlay');
   const mpSetupOverlay = document.getElementById('mpSetupOverlay');
   const mpLobbyOverlay = document.getElementById('mpLobbyOverlay');
+  const tournamentView = document.getElementById('tournamentView');
+  const tournamentContent = document.getElementById('tournamentContent');
   
   const teamNameInput = document.getElementById('teamNameInput');
   const setupFormations = document.getElementById('setupFormations');
@@ -63,9 +66,8 @@
   const btnNewDraft = document.getElementById('btnNewDraft');
   
   const builderView = document.getElementById('builderView');
-  const tournamentView = document.getElementById('tournamentView');
   const tournTitle = document.getElementById('tournTitle');
-  const roundsContainer = document.getElementById('roundsContainer');
+  const tournSubTitle = document.getElementById('tournSubTitle');
   
   const matchSimOverlay = document.getElementById('matchSimOverlay');
   const sbTeam1 = document.getElementById('sbTeam1');
@@ -78,6 +80,10 @@
   const penTeam1 = document.getElementById('penTeam1');
   const penTeam2 = document.getElementById('penTeam2');
   
+  const goalOverlay = document.getElementById('goalOverlay');
+  const goalTeamName = document.getElementById('goalTeamName');
+  const goalScorer = document.getElementById('goalScorer');
+
   let selectedSetupFormation = '433';
   let selectedTournSize = 4;
 
@@ -85,7 +91,7 @@
   let connections = []; 
   let hostConnection = null; 
   let playerConnections = {}; 
-  let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [] };
+  let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [], turnOrder: [], currentTurn: 0, sharedTeam: null };
   let myMpId = Math.random().toString(36).substr(2, 9);
 
   let pickTimerInterval = null;
@@ -104,11 +110,7 @@
 
   function sendSafe(conn, msg) {
     if (conn && conn.open) {
-      try {
-        conn.send(JSON.stringify(msg));
-      } catch (e) {
-        console.error("Errore invio dati:", e);
-      }
+      try { conn.send(JSON.stringify(msg)); } catch (e) { console.error("Errore invio dati:", e); }
     }
   }
 
@@ -128,9 +130,8 @@
     });
   }
 
-  // Logica Pulsanti Home Page
   document.getElementById('btnWorldCup').addEventListener('click', () => {
-    isMultiplayer = false;
+    isMultiplayer = false; isTurnMode = false;
     homeOverlay.classList.add('overlay-hidden');
     setupOverlay.classList.remove('overlay-hidden');
   });
@@ -149,17 +150,9 @@
   // CLASSIFICA LOGIC
   const leaderboardModal = document.getElementById('leaderboardModal');
   const teamDetailsModal = document.getElementById('teamDetailsModal');
-  
-  document.getElementById('btnLeaderboard').addEventListener('click', () => {
-    renderLeaderboard();
-    leaderboardModal.classList.add('show');
-  });
-  document.getElementById('closeLeaderboard').addEventListener('click', () => {
-    leaderboardModal.classList.remove('show');
-  });
-  document.getElementById('closeDetails').addEventListener('click', () => {
-    teamDetailsModal.classList.remove('show');
-  });
+  document.getElementById('btnLeaderboard').addEventListener('click', () => { renderLeaderboard(); leaderboardModal.classList.add('show'); });
+  document.getElementById('closeLeaderboard').addEventListener('click', () => { leaderboardModal.classList.remove('show'); });
+  document.getElementById('closeDetails').addEventListener('click', () => { teamDetailsModal.classList.remove('show'); });
 
   function getLeaderboardData() {
     let data = JSON.parse(localStorage.getItem('squadBuilderLeaderboard')) || [];
@@ -186,18 +179,9 @@
 
   function renderLeaderboard() {
     const data = getLeaderboardData();
-    if (data[0]) {
-      document.getElementById('podium-0').querySelector('.podium-name').textContent = data[0].name;
-      document.getElementById('podium-0').querySelector('.podium-rating').textContent = data[0].rating;
-    }
-    if (data[1]) {
-      document.getElementById('podium-1').querySelector('.podium-name').textContent = data[1].name;
-      document.getElementById('podium-1').querySelector('.podium-rating').textContent = data[1].rating;
-    }
-    if (data[2]) {
-      document.getElementById('podium-2').querySelector('.podium-name').textContent = data[2].name;
-      document.getElementById('podium-2').querySelector('.podium-rating').textContent = data[2].rating;
-    }
+    if (data[0]) { document.getElementById('podium-0').querySelector('.podium-name').textContent = data[0].name; document.getElementById('podium-0').querySelector('.podium-rating').textContent = data[0].rating; }
+    if (data[1]) { document.getElementById('podium-1').querySelector('.podium-name').textContent = data[1].name; document.getElementById('podium-1').querySelector('.podium-rating').textContent = data[1].rating; }
+    if (data[2]) { document.getElementById('podium-2').querySelector('.podium-name').textContent = data[2].name; document.getElementById('podium-2').querySelector('.podium-rating').textContent = data[2].rating; }
     const lowerRanks = document.getElementById('lowerRanks');
     lowerRanks.innerHTML = '';
     for (let i = 3; i < data.length; i++) {
@@ -228,10 +212,7 @@
 
   let counter = 12458;
   const counterEl = document.getElementById('teamsCounter');
-  setInterval(() => {
-    counter += Math.floor(Math.random() * 3) + 1;
-    counterEl.textContent = counter.toLocaleString('it-IT');
-  }, 4000);
+  setInterval(() => { counter += Math.floor(Math.random() * 3) + 1; counterEl.textContent = counter.toLocaleString('it-IT'); }, 4000);
 
   document.querySelectorAll('.mp-opt').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -248,17 +229,16 @@
     }); 
   });
 
-  // FUNZIONE PER PESCARE SQUADRE DAL DATABASE
   function getRandomTeamFromDatabase() {
     const anni = Object.keys(database);
-    if (anni.length === 0) return { name: "Bot Team", rating: 75 };
+    if (anni.length === 0) return { name: "Bot Team", rating: 75, roster: [] };
     const anno = anni[Math.floor(Math.random() * anni.length)];
     const squadre = Object.keys(database[anno]);
     const squadraNome = squadre[Math.floor(Math.random() * squadre.length)];
     const giocatori = database[anno][squadraNome];
     const top11 = giocatori.slice(0, 11);
     const rating = Math.floor(top11.reduce((a, g) => a + g.rating, 0) / Math.max(1, top11.length));
-    return { name: `${squadraNome} ${anno}`, rating: rating };
+    return { name: `${squadraNome} ${anno}`, rating: rating, roster: top11 };
   }
 
   document.getElementById('btnCreateRoom').addEventListener('click', () => {
@@ -272,160 +252,78 @@
 
   function createRoom(hostName, hostForm, teams, time, mode) {
     if (peer) peer.destroy();
-    
-    mpState.host = true;
-    mpState.teams = teams;
-    mpState.time = time;
-    mpState.mode = mode;
+    mpState.host = true; mpState.teams = teams; mpState.time = time; mpState.mode = mode;
     mpState.code = Math.random().toString(36).substr(2, 4).toUpperCase();
-    
-    // L'HOST GENERA LE SQUADRE DEI BOT UNA VOLTA SOLA E LE SALVA NELLO STATO
     mpState.players = [{ id: myMpId, name: hostName, formation: hostForm, isBot: false, ready: true }];
+    
     for(let i=1; i<mpState.teams; i++) {
       const teamData = getRandomTeamFromDatabase();
-      mpState.players.push({ 
-        id: 'bot'+i, 
-        name: teamData.name, 
-        rating: teamData.rating, 
-        isBot: true, 
-        ready: true, 
-        formation: '433' 
-      });
+      mpState.players.push({ id: 'bot'+i, name: teamData.name, rating: teamData.rating, roster: teamData.roster, isBot: true, ready: true, formation: '433' });
     }
 
     showToast('Creazione stanza in corso...');
     peer = new Peer('squadbuilder_' + mpState.code);
-    
-    peer.on('open', () => {
-      showToast('Stanza creata! Condividi il codice.');
-      showLobby();
-    });
+    peer.on('open', () => { showToast('Stanza creata! Condividi il codice.'); showLobby(); });
     peer.on('connection', (conn) => {
       connections.push(conn);
-      conn.on('data', (rawData) => {
-        let msg;
-        try { msg = typeof rawData === 'string' ? JSON.parse(rawData) : rawData; } catch(e) { return; }
-        handleHostMessage(msg, conn);
-      });
-      conn.on('close', () => { 
-        connections = connections.filter(c => c !== conn); 
-        let disconnectedPlayerId = null;
-        for (let id in playerConnections) {
-            if (playerConnections[id] === conn) {
-                disconnectedPlayerId = id;
-                break;
-            }
-        }
-        if (disconnectedPlayerId) handleClientDisconnect(disconnectedPlayerId);
-      });
+      conn.on('data', (rawData) => { let msg; try { msg = JSON.parse(rawData); } catch(e) { return; } handleHostMessage(msg, conn); });
+      conn.on('close', () => { connections = connections.filter(c => c !== conn); let id = Object.keys(playerConnections).find(k => playerConnections[k] === conn); if (id) handleClientDisconnect(id); });
     });
-    peer.on('error', (err) => {
-      showToast('Errore Host: ' + err.type);
-    });
+    peer.on('error', (err) => showToast('Errore Host: ' + err.type));
   }
 
   document.getElementById('btnJoinRoom').addEventListener('click', () => {
     const code = document.getElementById('joinCodeInput').value.trim().toUpperCase();
     const joinName = document.getElementById('joinNameInput').value.trim() || "Giocatore";
     const joinForm = document.querySelector('#joinFormations .active').dataset.form;
-    
     if (code.length !== 4) { showToast('Inserisci un codice di 4 lettere'); return; }
-    
     if (peer) peer.destroy();
-    
-    mpState.host = false;
-    mpState.code = code;
-    
+    mpState.host = false; mpState.code = code;
     showToast('Connessione alla stanza...');
     peer = new Peer();
     peer.on('open', () => {
       hostConnection = peer.connect('squadbuilder_' + mpState.code, {reliable: true});
-      let timeout = setTimeout(() => {
-        if (!hostConnection.open) { showToast('Nessuna stanza trovata. Controlla il codice.'); if(peer) peer.destroy(); }
-      }, 5000);
-
-      hostConnection.on('open', () => {
-        clearTimeout(timeout);
-        sendSafe(hostConnection, { type: 'request_state', from: myMpId });
-        sendSafe(hostConnection, { type: 'player_join', id: myMpId, name: joinName, formation: joinForm });
-      });
-      hostConnection.on('data', (rawData) => {
-        let msg;
-        try { msg = typeof rawData === 'string' ? JSON.parse(rawData) : rawData; } catch(e) { return; }
-        handleClientMessage(msg);
-      });
-      
-      hostConnection.on('close', () => {
-        showToast('L\'host ha abbandonato la partita.');
-        btnNewDraft.click();
-      });
+      let timeout = setTimeout(() => { if (!hostConnection.open) { showToast('Nessuna stanza trovata.'); if(peer) peer.destroy(); } }, 5000);
+      hostConnection.on('open', () => { clearTimeout(timeout); sendSafe(hostConnection, { type: 'request_state', from: myMpId }); sendSafe(hostConnection, { type: 'player_join', id: myMpId, name: joinName, formation: joinForm }); });
+      hostConnection.on('data', (rawData) => { let msg; try { msg = JSON.parse(rawData); } catch(e) { return; } handleClientMessage(msg); });
+      hostConnection.on('close', () => { showToast('L\'host ha abbandonato la partita.'); btnNewDraft.click(); });
     });
-    
-    peer.on('error', (err) => {
-      if (err.type === 'peer-unavailable') {
-        showToast('Stanza non trovata. L\'host è offline?');
-      } else {
-        showToast('Errore Client: ' + err.type);
-      }
-    });
+    peer.on('error', (err) => showToast(err.type === 'peer-unavailable' ? 'Stanza non trovata.' : 'Errore Client: ' + err.type));
   });
 
-  function broadcastToClients(msg) { 
-    connections.forEach(conn => sendSafe(conn, msg)); 
-  }
+  function broadcastToClients(msg) { connections.forEach(conn => sendSafe(conn, msg)); }
 
   function handleHostMessage(msg, conn) {
-    if (msg.type === 'request_state') {
-      // Invia lo stato attuale (che contiene già le squadre dei bot generate all'inizio)
-      sendSafe(conn, { type: 'state_sync', state: mpState });
-    } else if (msg.type === 'player_join') {
+    if (msg.type === 'request_state') sendSafe(conn, { type: 'state_sync', state: mpState });
+    else if (msg.type === 'player_join') {
       const botIdx = mpState.players.findIndex(p => p.isBot);
       if (botIdx !== -1) {
-        // Sostituisce il bot con il giocatore, ma ne mantiene il nome e il rating assegnati
         const botData = mpState.players[botIdx];
-        mpState.players[botIdx] = { 
-          id: msg.id, 
-          name: msg.name, // Il giocatore sceglie il suo nome
-          formation: msg.formation, 
-          isBot: false, 
-          ready: false, 
-          rating: botData.rating // Mantiene il rating del bot che sostituisce
-        };
-        playerConnections[msg.id] = conn; 
-        renderLobbyList(); 
-        showLobby(); 
-        broadcastToClients({ type: 'state_sync', state: mpState });
+        mpState.players[botIdx] = { id: msg.id, name: msg.name, formation: msg.formation, isBot: false, ready: false, rating: botData.rating, roster: botData.roster };
+        playerConnections[msg.id] = conn; renderLobbyList(); showLobby(); broadcastToClients({ type: 'state_sync', state: mpState });
       }
     } else if (msg.type === 'player_ready') {
-      const p = mpState.players.find(p => p.id === msg.id);
-      if (p) { 
-        p.ready = true; 
-        renderLobbyList(); 
-        showLobby(); 
-        broadcastToClients({ type: 'state_sync', state: mpState }); 
-      }
+      const p = mpState.players.find(p => p.id === msg.id); if (p) { p.ready = true; renderLobbyList(); showLobby(); broadcastToClients({ type: 'state_sync', state: mpState }); }
     } else if (msg.type === 'team_submitted') {
-      const p = mpState.players.find(p => p.id === msg.id);
-      if (p) { p.team = msg.team; p.rating = msg.rating; checkAllTeamsSubmitted(); }
+      const p = mpState.players.find(p => p.id === msg.id); if (p) { p.team = msg.team; p.rating = msg.rating; checkAllTeamsSubmitted(); }
     } else if (msg.type === 'match_result') {
-      const match = tournament.rounds[msg.rIdx].matches[msg.mIdx];
-      if (!match) return; 
-      if (match.played) { broadcastTournament(); return; }
-      
-      let winner;
-      if (msg.score1 > msg.score2) winner = match.team1;
-      else if (msg.score2 > msg.score1) winner = match.team2;
-      else winner = (msg.pens1 > msg.pens2) ? match.team1 : match.team2;
-
-      match.score1 = msg.score1; match.score2 = msg.score2;
-      match.pens1 = msg.pens1; match.pens2 = msg.pens2;
-      match.winner = winner; match.played = true;
-
-      advanceTournament(msg.rIdx, msg.mIdx, winner);
-      simulateAllAIMatches();
-      renderBracket();
-      broadcastTournament();
+      const match = tournament.knockout ? tournament.knockout.rounds[msg.rIdx].matches[msg.mIdx] : null;
+      if (!match || match.played) return;
+      let winner = msg.score1 > msg.score2 ? match.team1 : msg.score2 > msg.score1 ? match.team2 : (msg.pens1 > msg.pens2 ? match.team1 : match.team2);
+      match.score1 = msg.score1; match.score2 = msg.score2; match.pens1 = msg.pens1; match.pens2 = msg.pens2; match.winner = winner; match.played = true;
+      advanceTournament(msg.rIdx, msg.mIdx, winner); simulateAllAIMatches(); renderTournament(); broadcastTournament();
       if (checkTournamentEnd()) return;
+    } else if (msg.type === 'group_match_result') {
+      handleGroupMatchResult(msg.groupIdx, msg.matchIdx, msg.s1, msg.s2);
+    } else if (msg.type === 'extract_team') {
+      if (mpState.currentTurn === mpState.turnOrder.indexOf(msg.id)) {
+         pescaTurno(true); 
+         broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
+      }
+    } else if (msg.type === 'pick_player') {
+      if (mpState.currentTurn === mpState.turnOrder.indexOf(msg.id)) {
+         handlePlayerPick(msg.pos);
+      }
     }
   }
 
@@ -434,177 +332,117 @@
     const pIdx = mpState.players.findIndex(p => p.id === playerId);
     if (pIdx !== -1) {
       const p = mpState.players[pIdx];
-      const oldId = p.id;
-      p.isBot = true;
-      p.id = 'bot_dc_' + Date.now();
-      p.name = p.name + " (AI)";
-      p.ready = true;
-      
+      p.isBot = true; p.id = 'bot_dc_' + Date.now(); p.name = p.name + " (AI)"; p.ready = true;
       delete playerConnections[playerId];
-      
-      showToast(`${p.name.replace(" (AI)", "")} si è disconnesso. Sarà sostituito dalla AI.`);
-      
-      if (tournament) {
-        tournament.rounds.forEach(round => {
-          round.matches.forEach(match => {
-            if (match.team1 && match.team1.id === oldId) match.team1.id = p.id;
-            if (match.team2 && match.team2.id === oldId) match.team2.id = p.id;
-          });
-        });
-        simulateAllAIMatches();
-        renderBracket();
-        broadcastTournament();
-      } else {
-        renderLobbyList();
-        broadcastToClients({ type: 'state_sync', state: mpState });
-      }
+      showToast(`${p.name.replace(" (AI)", "")} si è disconnesso.`);
+      if (tournament) { simulateAllAIMatches(); renderTournament(); broadcastTournament(); } else { renderLobbyList(); broadcastToClients({ type: 'state_sync', state: mpState }); }
     }
   }
 
   function handleClientMessage(msg) {
     if (msg.type === 'state_sync' || msg.type === 'start_draft') {
-      const myHostStatus = mpState.host; 
-      mpState = msg.state; // I client ricevono lo stato con le squadre già generate dall'host
-      mpState.host = myHostStatus; 
-      if (msg.type === 'state_sync') showLobby();
-      else if (msg.type === 'start_draft') startMpDraft();
+      const myHostStatus = mpState.host; mpState = msg.state; mpState.host = myHostStatus;
+      if (msg.type === 'state_sync') showLobby(); else if (msg.type === 'start_draft') startMpDraft();
     } else if (msg.type === 'start_tournament') {
-      modalOverlay.classList.remove('show');
-      startTournament(msg.teams.length, msg.teams);
+      modalOverlay.classList.remove('show'); startTournament(msg.teams);
     } else if (msg.type === 'tournament_update') {
       applyTournamentState(msg.tournament);
+    } else if (msg.type === 'sync_extraction') {
+      turnoCorrente = msg.team; renderPlayerList(turnoCorrente.giocatori);
+      if (isTurnMode && mpState.currentTurn === mpState.turnOrder.indexOf(myMpId)) {
+        extractionLabel.innerHTML = `Tocca a te! Scegli un giocatore da ${escapeHTML(turnoCorrente.squadra)} <span class="year">· ${escapeHTML(turnoCorrente.anno)}</span>`;
+      } else {
+        extractionLabel.innerHTML = `Attendi... ${escapeHTML(mpState.players[mpState.turnOrder[mpState.currentTurn]].name)} sta scegliendo`;
+      }
     }
   }
 
   function showLobby() {
-    mpSetupOverlay.classList.add('overlay-hidden');
-    mpLobbyOverlay.classList.remove('overlay-hidden');
+    mpSetupOverlay.classList.add('overlay-hidden'); mpLobbyOverlay.classList.remove('overlay-hidden');
     document.getElementById('roomCodeDisplay').textContent = mpState.code;
-
-    const btnReadyMP = document.getElementById('btnReadyMP');
-    const btnStartMP = document.getElementById('btnStartMP');
-    const lobbyStatusText = document.getElementById('lobbyStatusText');
+    const btnReadyMP = document.getElementById('btnReadyMP'); const btnStartMP = document.getElementById('btnStartMP'); const lobbyStatusText = document.getElementById('lobbyStatusText');
     const me = mpState.players.find(p => p.id === myMpId);
-
     if (mpState.host) {
-      btnReadyMP.style.display = 'none';
-      btnStartMP.style.display = 'block';
-      lobbyStatusText.style.display = 'none';
-
+      btnReadyMP.style.display = 'none'; btnStartMP.style.display = 'block'; lobbyStatusText.style.display = 'none';
       btnStartMP.onclick = () => {
         const allReady = mpState.players.every(p => p.ready);
         if (!allReady) { showToast('Non tutti i giocatori sono pronti!'); return; }
-        broadcastToClients({ type: 'start_draft', state: mpState });
-        startMpDraft();
+        broadcastToClients({ type: 'start_draft', state: mpState }); startMpDraft();
       };
     } else {
-      btnReadyMP.style.display = 'block';
-      btnStartMP.style.display = 'none';
-      lobbyStatusText.style.display = 'block';
-      if (me && me.ready) {
-        btnReadyMP.textContent = 'In Attesa Host...';
-        btnReadyMP.disabled = true;
-      } else {
-        btnReadyMP.textContent = 'Sono Pronto';
-        btnReadyMP.disabled = false;
-      }
-
-      btnReadyMP.onclick = () => {
-        sendSafe(hostConnection, { type: 'player_ready', id: myMpId });
-        btnReadyMP.textContent = 'In Attesa Host...';
-        btnReadyMP.disabled = true;
-      };
+      btnReadyMP.style.display = 'block'; btnStartMP.style.display = 'none'; lobbyStatusText.style.display = 'block';
+      if (me && me.ready) { btnReadyMP.textContent = 'In Attesa Host...'; btnReadyMP.disabled = true; } 
+      else { btnReadyMP.textContent = 'Sono Pronto'; btnReadyMP.disabled = false; }
+      btnReadyMP.onclick = () => { sendSafe(hostConnection, { type: 'player_ready', id: myMpId }); btnReadyMP.textContent = 'In Attesa Host...'; btnReadyMP.disabled = true; };
     }
-
     renderLobbyList();
   }
 
   function renderLobbyList() {
-    const list = document.getElementById('lobbyList');
-    list.innerHTML = '';
+    const list = document.getElementById('lobbyList'); list.innerHTML = '';
     mpState.players.forEach(p => {
       const item = document.createElement('div');
       item.className = 'lobby-item' + (p.ready ? ' ready' : '');
-      item.innerHTML = `
-        <div>
-          <div class="lobby-name">${escapeHTML(p.name)}</div>
-          <div class="lobby-form">${p.formation.split('').join('-')}</div>
-        </div>
-        <div class="lobby-status ${p.ready ? 'pronto' : ''}">${p.isBot ? 'CPU' : (p.ready ? 'Pronto' : 'In Attesa')}</div>
-      `;
+      item.innerHTML = `<div><div class="lobby-name">${escapeHTML(p.name)}</div><div class="lobby-form">${p.formation.split('').join('-')}</div></div><div class="lobby-status ${p.ready ? 'pronto' : ''}">${p.isBot ? 'CPU' : (p.ready ? 'Pronto' : 'In Attesa')}</div>`;
       list.appendChild(item);
     });
   }
 
   function startMpDraft() {
     isEspertoMode = (mpState.mode === 'esperto');
+    isTurnMode = (mpState.mode === 'turni');
     const me = mpState.players.find(p => p.id === myMpId) || { name: 'CPU', formation: '433' };
-    nomeSquadra = me.name;
-    currentFormation = me.formation;
-    LAYOUT = FORMATIONS[currentFormation].layout;
-    COMPATIBILITA = FORMATIONS[currentFormation].compat;
-    initRosa(); renderPitch();
-    mpLobbyOverlay.classList.add('overlay-hidden');
+    nomeSquadra = me.name; currentFormation = me.formation;
+    LAYOUT = FORMATIONS[currentFormation].layout; COMPATIBILITA = FORMATIONS[currentFormation].compat;
+    initRosa(); renderPitch(); mpLobbyOverlay.classList.add('overlay-hidden');
+    
+    if (isTurnMode) {
+      mpState.turnOrder = mpState.players.filter(p => !p.isBot).map(p => p.id);
+      mpState.currentTurn = 0;
+      btnPesca.disabled = true; btnReroll.style.display = 'none';
+      
+      if (mpState.turnOrder.length <= 1) {
+        btnPesca.disabled = false;
+      }
+      
+      if (mpState.host) {
+        pescaTurno(true);
+        broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
+      }
+    }
   }
 
   function startPickTimer() {
-    clearInterval(pickTimerInterval);
-    pickTimeLeft = mpState.time;
-    draftTimer.style.display = 'block';
-    draftTimer.textContent = pickTimeLeft + 's';
-    draftTimer.classList.remove('urgent');
+    clearInterval(pickTimerInterval); pickTimeLeft = mpState.time;
+    draftTimer.style.display = 'block'; draftTimer.textContent = pickTimeLeft + 's'; draftTimer.classList.remove('urgent');
     pickTimerInterval = setInterval(() => {
-      pickTimeLeft--;
-      draftTimer.textContent = pickTimeLeft + 's';
+      pickTimeLeft--; draftTimer.textContent = pickTimeLeft + 's';
       if (pickTimeLeft <= 5) draftTimer.classList.add('urgent');
-      if (pickTimeLeft <= 0) {
-        clearInterval(pickTimerInterval);
-        draftTimer.style.display = 'none';
-        autoPickPlayer();
-      }
+      if (pickTimeLeft <= 0) { clearInterval(pickTimerInterval); draftTimer.style.display = 'none'; autoPickPlayer(); }
     }, 1000);
   }
 
   function autoPickPlayer() {
     if (Object.values(miaRosa).every(v => v !== null)) return; 
-    if (!turnoCorrente) { btnPesca.click(); setTimeout(autoPickPlayer, 500); return; }
-    const availablePlayers = turnoCorrente.giocatori.filter(g => 
-      Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo))
-    );
+    if (!turnoCorrente) return;
+    const availablePlayers = turnoCorrente.giocatori.filter(g => Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo)));
     if (availablePlayers.length > 0) {
       const randomPlayer = availablePlayers[Math.floor(Math.random() * availablePlayers.length)];
       const idx = turnoCorrente.giocatori.indexOf(randomPlayer);
       selezionaGiocatore(idx, null); 
-      if (posizioniDisponibili.length > 0) {
-        const randomPos = posizioniDisponibili[Math.floor(Math.random() * posizioniDisponibili.length)];
-        confermaInserimento(randomPos);
-      }
-    } else {
-      turnoCorrente = null;
-      btnPesca.disabled = false;
-      setTimeout(autoPickPlayer, 100);
+      if (posizioniDisponibili.length > 0) { confermaInserimento(posizioniDisponibili[Math.floor(Math.random() * posizioniDisponibili.length)]); }
     }
   }
 
   function initSetupScreen() {
-    populateFormations('setupFormations');
-    populateFormations('hostFormations');
-    populateFormations('joinFormations');
-    setupFormations.querySelectorAll('button').forEach(b => b.addEventListener('click', () => {
-      setupFormations.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-      b.classList.add('active');
-      selectedSetupFormation = b.dataset.form;
-    }));
+    populateFormations('setupFormations'); populateFormations('hostFormations'); populateFormations('joinFormations');
+    setupFormations.querySelectorAll('button').forEach(b => b.addEventListener('click', () => { setupFormations.querySelectorAll('button').forEach(btn => btn.classList.remove('active')); b.classList.add('active'); selectedSetupFormation = b.dataset.form; }));
   }
 
   btnStart.addEventListener('click', () => {
-    nomeSquadra = teamNameInput.value.trim() || "Squadra";
-    document.title = `${nomeSquadra} - Squad Builder`;
-    currentFormation = selectedSetupFormation;
-    LAYOUT = FORMATIONS[currentFormation].layout;
-    COMPATIBILITA = FORMATIONS[currentFormation].compat;
-    initRosa(); renderPitch();
-    setupOverlay.classList.add('overlay-hidden');
+    nomeSquadra = teamNameInput.value.trim() || "Squadra"; document.title = `${nomeSquadra} - Squad Builder`;
+    currentFormation = selectedSetupFormation; LAYOUT = FORMATIONS[currentFormation].layout; COMPATIBILITA = FORMATIONS[currentFormation].compat;
+    initRosa(); renderPitch(); setupOverlay.classList.add('overlay-hidden');
   });
 
   settingsToggle.addEventListener('click', (e) => { e.stopPropagation(); settingsDropdown.classList.toggle('show'); settingsToggle.classList.toggle('active'); });
@@ -615,7 +453,7 @@
     try {
       setStatus('Tentativo di caricamento automatico...', '');
       const res = await fetch('./data/manifest.json');
-      if (!res.ok) { setStatus('Nessun database trovato. Carica manualmente.', 'err'); return; }
+      if (!res.ok) { setStatus('Nessun database trovato.', 'err'); return; }
       const files = await res.json(); database = {};
       for (const file of files) {
         const anno = file.replace(/\.csv$/i, ''); const resCsv = await fetch(`./data/${file}`);
@@ -623,35 +461,21 @@
         rows.forEach(r => { const squadra = r['SQUADRA']; if (!squadra) return; if (!database[anno][squadra]) database[anno][squadra] = []; database[anno][squadra].push({ nome: r['GIOCATORE'], ruolo: r['RUOLO'], rating: parseInt(r['RATING'], 10) || 0 }); });
       }
       const nAnni = Object.keys(database).length;
-      if (nAnni > 0) { setStatus(`Database caricato: ${nAnni} mondiali.`, 'ok'); btnPesca.disabled = false; extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; } 
-      else { setStatus('Database vuoto. Carica manualmente.', 'err'); }
-    } catch (err) { setStatus('Errore caricamento automatico.', 'err'); }
+      if (nAnni > 0) { setStatus(`Database caricato: ${nAnni} mondiali.`, 'ok'); btnPesca.disabled = false; extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; } else { setStatus('Database vuoto.', 'err'); }
+    } catch (err) { setStatus('Errore caricamento.', 'err'); }
   }
 
   function splitCSVLine(line){ const out = []; let cur = ''; let inQ = false; for (let i=0;i<line.length;i++){ const ch = line[i]; if (ch === '"'){ if (inQ && line[i+1] === '"'){ cur += '"'; i++; } else inQ = !inQ; } else if (ch === ',' && !inQ){ out.push(cur); cur = ''; } else { cur += ch; } } out.push(cur); return out.map(s => s.trim()); }
-  
-  function parseCSV(text){
-    const lines = text.split(/\r\n|\n|\r/).filter(l => l.trim().length > 0);
-    if (lines.length === 0) return [];
-    const headers = splitCSVLine(lines[0]).map(h => h.toUpperCase());
-    const rows = [];
-    for (let i = 1; i < lines.length; i++) {
-      const cols = splitCSVLine(lines[i]);
-      const obj = {};
-      headers.forEach((h, idx) => { obj[h] = cols[idx] !== undefined ? cols[idx] : ''; });
-      rows.push(obj);
-    }
-    return rows;
-  }
+  function parseCSV(text){ const lines = text.split(/\r\n|\n|\r/).filter(l => l.trim().length > 0); if (lines.length === 0) return []; const headers = splitCSVLine(lines[0]).map(h => h.toUpperCase()); const rows = []; for (let i = 1; i < lines.length; i++) { const cols = splitCSVLine(lines[i]); const obj = {}; headers.forEach((h, idx) => { obj[h] = cols[idx] !== undefined ? cols[idx] : ''; }); rows.push(obj); } return rows; }
 
   fileInput.addEventListener('change', async (e) => {
     const files = Array.from(e.target.files || []).filter(f => f.name.toLowerCase().endsWith('.csv'));
     if (files.length === 0){ setStatus('Nessun file .csv trovato.', 'err'); return; }
-    setStatus('Caricamento manuale in corso...', ''); database = {};
+    setStatus('Caricamento manuale...', ''); database = {};
     try {
       for (const file of files){ const anno = file.name.replace(/\.csv$/i, ''); const text = await file.text(); const rows = parseCSV(text); database[anno] = {}; rows.forEach(r => { const squadra = r['SQUADRA']; if (!squadra) return; if (!database[anno][squadra]) database[anno][squadra] = []; database[anno][squadra].push({ nome: r['GIOCATORE'], ruolo: r['RUOLO'], rating: parseInt(r['RATING'], 10) || 0 }); }); }
-      const nAnni = Object.keys(database).length; setStatus(`${nAnni} mondiali caricati manualmente.`, 'ok'); btnPesca.disabled = false; extractionLabel.textContent = 'Pronto: premi "Pesca turno"';
-    } catch (err){ setStatus('Errore durante il caricamento.', 'err'); }
+      const nAnni = Object.keys(database).length; setStatus(`${nAnni} mondiali caricati.`, 'ok'); btnPesca.disabled = false; extractionLabel.textContent = 'Pronto: premi "Pesca turno"';
+    } catch (err){ setStatus('Errore caricamento.', 'err'); }
   });
 
   function setStatus(msg, kind){ statusLine.textContent = msg; statusLine.className = 'status-line' + (kind ? ' ' + kind : ''); }
@@ -676,7 +500,7 @@
     else { pitchRatingLive.textContent = ''; userTeamRating = 40; }
   }
 
-  function pescaTurno() {
+  function pescaTurno(shared = false) {
     if (Object.values(miaRosa).every(v => v !== null)){ showToast('La rosa è già completa!'); return; }
     const anni = Object.keys(database); if (anni.length === 0) return;
     let squadraValida = false, tentativi = 0, anno, squadre, squadra, giocatori;
@@ -685,18 +509,25 @@
       squadre = Object.keys(database[anno]);
       squadra = squadre[Math.floor(Math.random() * squadre.length)]; 
       giocatori = database[anno][squadra];
-      const hasValidPlayer = giocatori.some(g => Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo)));
-      if (hasValidPlayer) squadraValida = true; else tentativi++;
+      if (giocatori.some(g => Object.keys(COMPATIBILITA).some(pos => miaRosa[pos] === null && COMPATIBILITA[pos].includes(g.ruolo)))) squadraValida = true;
+      else tentativi++;
     }
     turnoCorrente = { anno, squadra, giocatori }; giocatoreScelto = null; posizioniDisponibili = [];
     extractionLabel.innerHTML = `${escapeHTML(squadra)} <span class="year">· ${escapeHTML(anno)}</span>`;
-    renderPlayerList(giocatori); btnPesca.disabled = true; renderPitch();
-    if (isMultiplayer) startPickTimer();
-    if (rerollsLeft > 0) { btnReroll.style.display = 'inline-block'; btnReroll.textContent = `Re-roll (${rerollsLeft})`; btnReroll.disabled = false; } 
+    renderPlayerList(giocatori); renderPitch();
+    if (isMultiplayer && !isTurnMode) startPickTimer();
+    if (rerollsLeft > 0 && !isTurnMode) { btnReroll.style.display = 'inline-block'; btnReroll.textContent = `Re-roll (${rerollsLeft})`; btnReroll.disabled = false; } 
     else { btnReroll.style.display = 'none'; }
   }
 
-  btnPesca.addEventListener('click', pescaTurno);
+  btnPesca.addEventListener('click', () => {
+    if (isTurnMode) {
+      if (mpState.host) { pescaTurno(true); broadcastToClients({ type: 'sync_extraction', team: turnoCorrente }); }
+      else { sendSafe(hostConnection, { type: 'extract_team', id: myMpId }); }
+    } else {
+      pescaTurno();
+    }
+  });
 
   btnReroll.addEventListener('click', () => { if (rerollsLeft <= 0) return; rerollsLeft--; pescaTurno(); });
 
@@ -729,8 +560,14 @@
 
   function confermaInserimento(pos) {
     if (!giocatoreScelto) return;
-    clearInterval(pickTimerInterval);
-    draftTimer.style.display = 'none'; draftTimer.classList.remove('urgent'); btnReroll.style.display = 'none';
+    clearInterval(pickTimerInterval); draftTimer.style.display = 'none'; draftTimer.classList.remove('urgent'); btnReroll.style.display = 'none';
+    
+    if (isTurnMode) {
+      if (mpState.host) handlePlayerPick(pos);
+      else sendSafe(hostConnection, { type: 'pick_player', id: myMpId, pos: pos });
+      return;
+    }
+
     miaRosa[pos] = giocatoreScelto; giocatoreScelto = null; posizioniDisponibili = []; turnoCorrente = null;
     playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
     extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; renderPitch();
@@ -739,10 +576,43 @@
     else btnPesca.disabled = false;
   }
 
+  function handlePlayerPick(pos) {
+    miaRosa[pos] = giocatoreScelto; 
+    const idx = turnoCorrente.giocatori.indexOf(giocatoreScelto);
+    if (idx > -1) turnoCorrente.giocatori.splice(idx, 1);
+    
+    giocatoreScelto = null; posizioniDisponibili = []; 
+    renderPitch();
+
+    if (Object.values(miaRosa).every(v => v !== null)) {
+      mostraRisultatoFinale();
+    } else {
+      if (mpState.turnOrder.length <= 1) {
+        playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
+        extractionLabel.textContent = 'Pronto: pesca un nuovo turno';
+        btnPesca.disabled = false;
+      } else {
+        mpState.currentTurn = (mpState.currentTurn + 1) % mpState.turnOrder.length;
+        if (turnoCorrente.giocatori.length === 0 || !turnoCorrente.giocatori.some(g => Object.keys(COMPATIBILITA).some(p => miaRosa[p] === null && COMPATIBILITA[p].includes(g.ruolo)))) {
+           pescaTurno(true);
+        }
+        broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
+        
+        if (mpState.turnOrder[mpState.currentTurn] === myMpId) {
+          extractionLabel.innerHTML = `Tocca a te! Scegli un giocatore da ${escapeHTML(turnoCorrente.squadra)}`;
+          btnPesca.disabled = false;
+        } else {
+          extractionLabel.innerHTML = `Attendi... ${escapeHTML(mpState.players[mpState.turnOrder[mpState.currentTurn]].name)} sta scegliendo`;
+          btnPesca.disabled = true;
+        }
+      }
+    }
+  }
+
   function mostraRisultatoFinale(){
     if (isMultiplayer) {
       const me = mpState.players.find(p => p.id === myMpId);
-      if (me) { me.team = miaRosa; me.rating = userTeamRating; }
+      if (me) { me.team = miaRosa; me.rating = userTeamRating; me.roster = LAYOUT.map(item => miaRosa[item.pos]); }
       let allDone = false;
       if (mpState.host) {
         allDone = mpState.players.every(p => p.isBot || (p.team && p.rating));
@@ -771,17 +641,11 @@
     if (!mpState.host) return;
     const allDone = mpState.players.every(p => p.isBot || (p.team && p.rating));
     if (allDone) {
-      // FIX CRITICO: Le squadre per il tabellone vengono prese ESCLUSIVAMENTE dallo stato condiviso (mpState.players)
-      // Nessuna generazione casuale qui, tutti usano gli stessi dati.
-      const teams = mpState.players.map(p => {
-        return { name: p.name, rating: p.rating, isUser: (p.id === myMpId), id: p.id };
-      });
-      
+      const teams = mpState.players.map(p => ({ name: p.name, rating: p.rating, roster: p.roster || [], isUser: (p.id === myMpId), id: p.id }));
       teams.sort(() => Math.random() - 0.5);
-      
       modalOverlay.classList.remove('show'); 
       broadcastToClients({ type: 'start_tournament', teams: teams });
-      startTournament(teams.length, teams);
+      startTournament(teams);
     }
   }
 
@@ -792,53 +656,207 @@
     btnPesca.disabled = Object.keys(database).length === 0;
     builderView.classList.remove('hidden'); tournamentView.classList.remove('active'); tournament = null;
     if (peer) peer.destroy(); peer = null; connections = []; hostConnection = null; playerConnections = {};
-    isMultiplayer = false; isEspertoMode = false; draftTimer.style.display = 'none';
+    isMultiplayer = false; isTurnMode = false; isEspertoMode = false; draftTimer.style.display = 'none';
     homeOverlay.classList.remove('overlay-hidden');
   });
 
   btnPlayTournament.addEventListener('click', () => { 
     modalOverlay.classList.remove('show'); 
-    if (isMultiplayer && mpState.host) {
-      checkAllTeamsSubmitted(); 
-    } else if (!isMultiplayer) {
-      // Single player: genera le squadre bot qui
-      const teams = [{ name: nomeSquadra, rating: userTeamRating, isUser: true, id: myMpId }];
+    if (isMultiplayer && mpState.host) { checkAllTeamsSubmitted(); } 
+    else if (!isMultiplayer) {
+      const teams = [{ name: nomeSquadra, rating: userTeamRating, roster: LAYOUT.map(item => miaRosa[item.pos]), isUser: true, id: myMpId }];
       for (let i = 1; i < selectedTournSize; i++) {
         const teamData = getRandomTeamFromDatabase();
-        teams.push({ name: teamData.name, rating: teamData.rating, isUser: false, id: 'bot'+i });
+        teams.push({ name: teamData.name, rating: teamData.rating, roster: teamData.roster, isUser: false, id: 'bot'+i });
       }
       teams.sort(() => Math.random() - 0.5);
-      startTournament(selectedTournSize, teams); 
+      startTournament(teams); 
     }
   });
 
-  function startTournament(size, teamsList) {
+  // --- LOGICA FASE A GIRONI E KNOCKOUT ---
+  function startTournament(teamsList) {
     builderView.classList.add('hidden'); tournamentView.classList.add('active'); 
-    tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer (${size})` : `Mondiali a ${size} Squadre`;
+    tournTitle.textContent = isMultiplayer ? `Mondiali Multiplayer` : `Mondiali`;
+    tournSubTitle.textContent = "Fase a Gironi";
+    
     const teams = teamsList || [];
-    teams.forEach(t => { t.isUser = (t.id === myMpId); });
-    tournament = { size: size, rounds: [], userEliminated: false, userStats: { gf: 0, gs: 0, wins: 0, losses: 0 } };
+    tournament = { phase: 'groups', groups: [], knockout: null };
+    
+    let numGroups = teams.length / 4;
+    for(let i=0; i<numGroups; i++) {
+      let groupTeams = teams.slice(i*4, i*4+4).map(t => ({...t, pts: 0, gf: 0, gs: 0, played: 0}));
+      
+      // FIX: Salviamo gli ID delle squadre per non far confondere il sorteggio
+      let ids = groupTeams.map(t => t.id);
+      tournament.groups.push({
+        teams: groupTeams,
+        matches: [
+          {t1: ids[0], t2: ids[1], played: false}, {t1: ids[2], t2: ids[3], played: false},
+          {t1: ids[0], t2: ids[2], played: false}, {t1: ids[1], t2: ids[3], played: false},
+          {t1: ids[0], t2: ids[3], played: false}, {t1: ids[1], t2: ids[2], played: false}
+        ]
+      });
+    }
+    
+    simulateGroupAIMatches();
+    renderTournament();
+  }
+
+  function getTeamById(group, id) {
+    return group.teams.find(t => t.id === id);
+  }
+
+  function simulateGroupAIMatches() {
+    tournament.groups.forEach(group => {
+      group.matches.forEach(m => {
+        let t1 = getTeamById(group, m.t1);
+        let t2 = getTeamById(group, m.t2);
+        if (!m.played && !t1.isUser && !t2.isUser) {
+          let s1 = Math.floor(Math.random() * 4 * (t1.rating / (t1.rating + t2.rating + 1)) * 2.5);
+          let s2 = Math.floor(Math.random() * 4 * (t2.rating / (t1.rating + t2.rating + 1)) * 2.5);
+          m.s1 = s1; m.s2 = s2; m.played = true;
+          updateGroupStats(group, m.t1, m.t2, s1, s2);
+        }
+      });
+    });
+  }
+
+  function updateGroupStats(group, t1Id, t2Id, s1, s2) {
+    let t1 = getTeamById(group, t1Id);
+    let t2 = getTeamById(group, t2Id);
+    t1.gf += s1; t1.gs += s2; t1.played++;
+    t2.gf += s2; t2.gs += s1; t2.played++;
+    if (s1 > s2) { t1.pts += 3; t1.wins = (t1.wins||0)+1; t2.losses = (t2.losses||0)+1; }
+    else if (s2 > s1) { t2.pts += 3; t2.wins = (t2.wins||0)+1; t1.losses = (t1.losses||0)+1; }
+    else { t1.pts += 1; t2.pts += 1; t1.draws = (t1.draws||0)+1; t2.draws = (t2.draws||0)+1; }
+  }
+
+  function renderTournament() {
+    if (tournament.phase === 'groups') renderGroupStage();
+    else if (tournament.phase === 'knockout') renderBracket();
+  }
+
+  function renderGroupStage() {
+    tournamentContent.innerHTML = '';
+    const container = document.createElement('div');
+    container.className = 'groups-container';
+    
+    tournament.groups.forEach((group, idx) => {
+      const card = document.createElement('div');
+      card.className = 'group-card';
+      // Creiamo una copia per il sort senza toccare l'array originale degli ID
+      let sortedTeams = [...group.teams].sort((a,b) => b.pts - a.pts || (b.gf-b.gs) - (a.gf-a.gs) || b.gf - a.gf);
+      
+      let html = `<div class="group-title">Girone ${String.fromCharCode(65+idx)}</div>`;
+      html += '<table class="group-table"><tr><th>Squadra</th><th>Pt</th><th>GF</th><th>GS</th></tr>';
+      sortedTeams.forEach(t => {
+        let uClass = t.isUser ? 'user-team-row' : '';
+        html += `<tr class="${uClass}"><td>${escapeHTML(t.name)}</td><td>${t.pts}</td><td>${t.gf}</td><td>${t.gs}</td></tr>`;
+      });
+      html += '</table>';
+      
+      const userTeam = group.teams.find(t => t.isUser);
+      if (userTeam) {
+        const userMatch = group.matches.find(m => !m.played && (getTeamById(group, m.t1).isUser || getTeamById(group, m.t2).isUser));
+        if (userMatch) {
+          const t1 = getTeamById(group, userMatch.t1);
+          const t2 = getTeamById(group, userMatch.t2);
+          const oppName = t1.isUser ? t2.name : t1.name;
+          html += `<button class="play-group-btn" onclick="playGroupMatch(${idx})">Gioca vs ${escapeHTML(oppName)}</button>`;
+        }
+      }
+      card.innerHTML = html;
+      container.appendChild(card);
+    });
+    tournamentContent.appendChild(container);
+  }
+
+  window.playGroupMatch = function(groupIdx) {
+    const group = tournament.groups[groupIdx];
+    const matchIdx = group.matches.findIndex(m => !m.played && (getTeamById(group, m.t1).isUser || getTeamById(group, m.t2).isUser));
+    if (matchIdx === -1) return;
+    
+    const match = group.matches[matchIdx];
+    const t1 = getTeamById(group, match.t1); const t2 = getTeamById(group, match.t2);
+    
+    let s1 = Math.floor(Math.random() * 4 * (t1.rating / (t1.rating + t2.rating + 1)) * 2.5);
+    let s2 = Math.floor(Math.random() * 4 * (t2.rating / (t1.rating + t2.rating + 1)) * 2.5);
+    
+    if (isMultiplayer && !mpState.host) {
+      sendSafe(hostConnection, { type: 'group_match_result', groupIdx: groupIdx, matchIdx: matchIdx, s1: s1, s2: s2 });
+      showToast(`${t1.name} ${s1} - ${s2} ${t2.name}`);
+    } else {
+      match.s1 = s1; match.s2 = s2; match.played = true;
+      updateGroupStats(group, match.t1, match.t2, s1, s2);
+      showToast(`${t1.name} ${s1} - ${s2} ${t2.name}`);
+      
+      simulateGroupAIMatches();
+      
+      let allPlayed = true;
+      tournament.groups.forEach(g => { if (g.matches.some(m => !m.played)) allPlayed = false; });
+      
+      if (allPlayed) {
+        startKnockoutPhase();
+        if (isMultiplayer && mpState.host) broadcastTournament();
+      } else {
+        renderTournament();
+        if (isMultiplayer && mpState.host) broadcastTournament();
+      }
+    }
+  };
+
+  function handleGroupMatchResult(groupIdx, matchIdx, s1, s2) {
+    const group = tournament.groups[groupIdx];
+    const match = group.matches[matchIdx];
+    match.s1 = s1; match.s2 = s2; match.played = true;
+    updateGroupStats(group, match.t1, match.t2, s1, s2);
+    
+    simulateGroupAIMatches();
+    let allPlayed = true;
+    tournament.groups.forEach(g => { if (g.matches.some(m => !m.played)) allPlayed = false; });
+    
+    if (allPlayed) {
+      startKnockoutPhase();
+    } else {
+      renderTournament();
+    }
+    broadcastTournament();
+  }
+
+  function startKnockoutPhase() {
+    tournament.phase = 'knockout';
+    tournSubTitle.textContent = "Fase a Eliminazione";
+    
+    let qualified = [];
+    tournament.groups.forEach(group => {
+      let sortedTeams = [...group.teams].sort((a,b) => b.pts - a.pts || (b.gf-b.gs) - (a.gf-a.gs) || b.gf - a.gf);
+      qualified.push(sortedTeams[0]); qualified.push(sortedTeams[1]);
+    });
+    
+    qualified.sort(() => Math.random() - 0.5);
+    
+    tournament.knockout = { rounds: [] };
     let round1Matches = [];
-    for (let i = 0; i < teams.length; i += 2) { round1Matches.push({ team1: teams[i], team2: teams[i+1], score1: null, score2: null, pens1: null, pens2: null, winner: null, played: false }); }
+    for (let i = 0; i < qualified.length; i += 2) { round1Matches.push({ team1: qualified[i], team2: qualified[i+1], score1: null, score2: null, pens1: null, pens2: null, winner: null, played: false }); }
     function getRoundName(t) { if (t == 2) return "Finale"; if (t == 4) return "Semifinali"; if (t == 8) return "Quarti di Finale"; if (t == 16) return "Ottavi di Finale"; return "Turno"; }
-    tournament.rounds.push({ name: getRoundName(teams.length), matches: round1Matches });
+    tournament.knockout.rounds.push({ name: getRoundName(qualified.length), matches: round1Matches });
     let prevMatches = round1Matches;
     while (prevMatches.length > 1) {
       let nextMatches = [];
       for (let i = 0; i < prevMatches.length; i += 2) { nextMatches.push({ team1: null, team2: null, score1: null, score2: null, pens1: null, pens2: null, winner: null, played: false }); }
-      tournament.rounds.push({ name: getRoundName(nextMatches.length * 2), matches: nextMatches });
+      tournament.knockout.rounds.push({ name: getRoundName(nextMatches.length * 2), matches: nextMatches });
       prevMatches = nextMatches;
     }
-    if (!isMultiplayer || mpState.host) {
-      simulateAllAIMatches();
-      if (isMultiplayer) broadcastTournament();
-    }
-    renderBracket();
+    
+    simulateAllAIMatches();
+    renderTournament();
   }
 
   function renderBracket() {
-    roundsContainer.innerHTML = '';
-    tournament.rounds.forEach((round, rIdx) => {
+    tournamentContent.innerHTML = '<div class="rounds-container"></div>';
+    const container = tournamentContent.querySelector('.rounds-container');
+    tournament.knockout.rounds.forEach((round, rIdx) => {
       const roundDiv = document.createElement('div'); roundDiv.className = 'round'; roundDiv.innerHTML = `<div class="round-title">${round.name}</div>`;
       round.matches.forEach((match, mIdx) => {
         const matchDiv = document.createElement('div'); matchDiv.className = 'match-card';
@@ -860,7 +878,7 @@
         }
         roundDiv.appendChild(matchDiv);
       });
-      roundsContainer.appendChild(roundDiv);
+      container.appendChild(roundDiv);
     });
   }
 
@@ -881,14 +899,35 @@
     matchInterval = setInterval(() => {
       minute++; sbMinute.textContent = minute + "'";
       if (minute === 46) sbPhase.textContent = "Secondo Tempo";
-      if (Math.random() < prob1) { score1++; updateScoreboard(score1, score2); addGoalEvent(match.team1.name, minute); if (match.team1.isUser || match.team2.isUser) tournament.userStats.gf += (match.team1.isUser ? 1 : 0), tournament.userStats.gs += (match.team2.isUser ? 1 : 0); }
-      if (Math.random() < prob2) { score2++; updateScoreboard(score1, score2); addGoalEvent(match.team2.name, minute); if (match.team1.isUser || match.team2.isUser) tournament.userStats.gf += (match.team2.isUser ? 1 : 0), tournament.userStats.gs += (match.team1.isUser ? 1 : 0); }
+      if (Math.random() < prob1) { 
+        score1++; updateScoreboard(score1, score2); 
+        const scorer = match.team1.roster[Math.floor(Math.random()*11)];
+        triggerGoalAnimation(match.team1.name, scorer.nome, minute); 
+        addGoalEvent(match.team1.name, minute); 
+        if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
+        if (match.team1.isUser) tournament.userStats.gf++; if (match.team2.isUser) tournament.userStats.gs++;
+      }
+      if (Math.random() < prob2) { 
+        score2++; updateScoreboard(score1, score2); 
+        const scorer = match.team2.roster[Math.floor(Math.random()*11)];
+        triggerGoalAnimation(match.team2.name, scorer.nome, minute); 
+        addGoalEvent(match.team2.name, minute); 
+        if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
+        if (match.team2.isUser) tournament.userStats.gf++; if (match.team1.isUser) tournament.userStats.gs++;
+      }
       if (minute >= 90) {
         clearInterval(matchInterval);
         if (score1 === score2) { sbPhase.textContent = "Ai Rigori!"; setTimeout(() => startPenalties(match, score1, score2), 1000); } 
         else { finishMatch(match, score1, score2, null, null); }
       }
     }, 100);
+  }
+
+  function triggerGoalAnimation(teamName, scorer, minute) {
+    goalTeamName.textContent = teamName;
+    goalScorer.textContent = `${scorer} (${minute}')`;
+    goalOverlay.classList.add('show');
+    setTimeout(() => goalOverlay.classList.remove('show'), 1500);
   }
 
   function updateScoreboard(s1, s2) { sbScore.textContent = `${s1} - ${s2}`; sbScore.classList.add('goal-anim'); setTimeout(() => sbScore.classList.remove('goal-anim'), 500); }
@@ -924,21 +963,22 @@
   }
 
   function advanceTournament(rIdx, mIdx, winner) {
-    if (rIdx + 1 < tournament.rounds.length) {
+    if (rIdx + 1 < tournament.knockout.rounds.length) {
       const nextMatchIdx = Math.floor(mIdx / 2); const isTeam1 = mIdx % 2 === 0;
-      if (isTeam1) tournament.rounds[rIdx + 1].matches[nextMatchIdx].team1 = winner;
-      else tournament.rounds[rIdx + 1].matches[nextMatchIdx].team2 = winner;
+      if (isTeam1) tournament.knockout.rounds[rIdx + 1].matches[nextMatchIdx].team1 = winner;
+      else tournament.knockout.rounds[rIdx + 1].matches[nextMatchIdx].team2 = winner;
     }
   }
 
   function simulateAllAIMatches() {
+    if (!tournament.knockout) return;
     let changed = true;
     while (changed) {
       changed = false;
-      tournament.rounds.forEach((round, rIdx) => {
+      tournament.knockout.rounds.forEach((round, rIdx) => {
         round.matches.forEach((m, mIdx) => {
           if (!m.played && m.team1 && m.team2) {
-            const isAIvAI = m.team1.id.startsWith('bot') && m.team2.id.startsWith('bot');
+            const isAIvAI = !m.team1.isUser && !m.team2.isUser;
             if (isAIvAI) {
               let s1 = Math.floor(Math.random() * 4 * (m.team1.rating / (m.team1.rating + m.team2.rating + 1)) * 2.5);
               let s2 = Math.floor(Math.random() * 4 * (m.team2.rating / (m.team1.rating + m.team2.rating + 1)) * 2.5);
@@ -965,49 +1005,33 @@
   function broadcastTournament() {
     if (mpState.host) {
       const cleanTournament = JSON.parse(JSON.stringify(tournament));
-      delete cleanTournament.userStats;
-      delete cleanTournament.userEliminated;
       broadcastToClients({ type: 'tournament_update', tournament: cleanTournament });
     }
   }
 
   function applyTournamentState(t) {
-    const myStats = tournament ? (tournament.userStats || { gf: 0, gs: 0, wins: 0, losses: 0 }) : { gf: 0, gs: 0, wins: 0, losses: 0 };
-    const myEliminated = tournament ? (tournament.userEliminated || false) : false;
-    if (pendingMatchResult) {
-      const hostMatch = t.rounds[pendingMatchResult.rIdx].matches[pendingMatchResult.mIdx];
-      if (hostMatch && hostMatch.played) {
-        clearInterval(pendingMatchInterval);
-        pendingMatchResult = null;
-      } else {
-        sendSafe(hostConnection, { type: 'match_result', rIdx: pendingMatchResult.rIdx, mIdx: pendingMatchResult.mIdx, score1: pendingMatchResult.score1, score2: pendingMatchResult.score2, pens1: pendingMatchResult.pens1, pens2: pendingMatchResult.pens2 });
-      }
-    }
     tournament = t;
-    tournament.userStats = myStats;
-    tournament.userEliminated = myEliminated;
-    tournament.rounds.forEach((round, rIdx) => {
-      round.matches.forEach((match, mIdx) => {
-        if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
-        if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
-        if (pendingMatchResult && rIdx === pendingMatchResult.rIdx && mIdx === pendingMatchResult.mIdx && !match.played) {
-          match.played = true;
-          match.score1 = pendingMatchResult.score1;
-          match.score2 = pendingMatchResult.score2;
-          match.pens1 = pendingMatchResult.pens1;
-          match.pens2 = pendingMatchResult.pens2;
-          if (match.score1 > match.score2) match.winner = match.team1;
-          else if (match.score2 > match.score1) match.winner = match.team2;
-          else match.winner = (match.pens1 > match.pens2) ? match.team1 : match.team2;
-        }
+    if (tournament.knockout) {
+      tournament.knockout.rounds.forEach((round, rIdx) => {
+        round.matches.forEach((match, mIdx) => {
+          if (match.team1) match.team1.isUser = (match.team1.id === myMpId);
+          if (match.team2) match.team2.isUser = (match.team2.id === myMpId);
+        });
       });
-    });
-    renderBracket();
+    } else if (tournament.groups) {
+      tournament.groups.forEach(group => {
+        group.teams.forEach(team => {
+          team.isUser = (team.id === myMpId);
+        });
+      });
+    }
+    renderTournament();
     if (checkTournamentEnd()) return;
   }
 
   function checkTournamentEnd() {
-    const finalMatch = tournament.rounds[tournament.rounds.length - 1].matches[0];
+    if (!tournament.knockout) return false;
+    const finalMatch = tournament.knockout.rounds[tournament.knockout.rounds.length - 1].matches[0];
     if (finalMatch.played) {
       showChampion(finalMatch.winner);
       return true;
@@ -1016,14 +1040,11 @@
   }
 
   function finishMatch(match, s1, s2, p1, p2) {
-    let winner;
-    if (s1 > s2) winner = match.team1;
-    else if (s2 > s1) winner = match.team2;
-    else winner = (p1 > p2) ? match.team1 : match.team2;
+    let winner = s1 > s2 ? match.team1 : s2 > s1 ? match.team2 : (p1 > p2 ? match.team1 : match.team2);
     match.score1 = s1; match.score2 = s2; match.pens1 = p1; match.pens2 = p2; match.winner = winner; match.played = true;
     const userWasPlaying = match.team1.isUser || match.team2.isUser;
     if (userWasPlaying) {
-      if (winner.isUser) tournament.userStats.wins++;
+      if (winner.isUser) tournament.userStats.wins++; 
       else { tournament.userStats.losses++; tournament.userEliminated = true; }
     }
     const { rIdx, mIdx } = currentMatchData;
@@ -1031,22 +1052,13 @@
       matchSimOverlay.classList.remove('show');
       if (isMultiplayer) {
         if (mpState.host) {
-          advanceTournament(rIdx, mIdx, winner);
-          simulateAllAIMatches();
-          renderBracket();
-          broadcastTournament();
+          advanceTournament(rIdx, mIdx, winner); simulateAllAIMatches(); renderTournament(); broadcastTournament();
           if (checkTournamentEnd()) return;
         } else {
-          pendingMatchResult = { rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 };
           sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
-          pendingMatchInterval = setInterval(() => {
-            sendSafe(hostConnection, { type: 'match_result', rIdx, mIdx, score1: s1, score2: s2, pens1: p1, pens2: p2 });
-          }, 3000);
         }
       } else {
-        advanceTournament(rIdx, mIdx, winner);
-        simulateAllAIMatches();
-        renderBracket();
+        advanceTournament(rIdx, mIdx, winner); simulateAllAIMatches(); renderTournament();
         if (checkTournamentEnd()) return;
       }
     }, 2000);
@@ -1054,21 +1066,14 @@
 
   function showChampion(winner) {
     const oldTrophy = document.getElementById('trophyDiv'); if (oldTrophy) oldTrophy.remove();
-    const oldEl = document.getElementById('eliminatedDiv'); if (oldEl) oldEl.remove(); 
     modalEyebrow.textContent = "Fine Mondiale"; modalTitle.textContent = "Campione del Mondo!"; modalTitle.classList.add('champion');
     modalContent.style.display = 'none'; btnPlayTournament.style.display = 'none'; btnNewDraft.textContent = 'Torna alla Home';
     let summaryHTML = `<div style="font-size:60px; margin-bottom:20px;">🏆</div><h2 class="champion" style="margin-bottom: 20px;">${escapeHTML(winner.name)}</h2>`;
     if (tournament.userStats) {
       const isUserWinner = winner.isUser;
-      summaryHTML += `
-        <div class="summary-stats">
-          <div class="stat-item"><div class="stat-value">${tournament.userStats.gf}</div><div class="stat-label">Gol Fatti</div></div>
-          <div class="stat-item"><div class="stat-value">${tournament.userStats.gs}</div><div class="stat-label">Gol Subiti</div></div>
-          <div class="stat-item"><div class="stat-value" style="color:${isUserWinner ? 'var(--gold)' : 'var(--accent)'}">${isUserWinner ? 'VITTORIA' : 'SCONFITTA'}</div><div class="stat-label">Risultato</div></div>
-        </div>`;
+      summaryHTML += `<div class="summary-stats"><div class="stat-item"><div class="stat-value">${tournament.userStats.gf}</div><div class="stat-label">Gol Fatti</div></div><div class="stat-item"><div class="stat-value">${tournament.userStats.gs}</div><div class="stat-label">Gol Subiti</div></div><div class="stat-item"><div class="stat-value" style="color:${isUserWinner ? 'var(--gold)' : 'var(--accent)'}">${isUserWinner ? 'VITTORIA' : 'SCONFITTA'}</div><div class="stat-label">Risultato</div></div></div>`;
     }
-    const trofeoDiv = document.createElement('div'); trofeoDiv.id = 'trophyDiv';
-    trofeoDiv.innerHTML = summaryHTML;
+    const trofeoDiv = document.createElement('div'); trofeoDiv.id = 'trophyDiv'; trofeoDiv.innerHTML = summaryHTML;
     modalContent.parentNode.insertBefore(trofeoDiv, modalContent);
     modalOverlay.classList.add('show');
   }

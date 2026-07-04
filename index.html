@@ -17,7 +17,6 @@
   <div class="home-hero">
     <h1 class="hero-title">DREAM <span>TEAM</span></h1>
     <p class="hero-subtitle">Tira il dado. Costruisci la tua nazionale dei sogni.</p>
-    
     <div class="hero-actions">
       <button class="hero-btn primary" id="btnWorldCup">
         <span class="hero-btn-title">GIOCA ORA</span>
@@ -28,15 +27,16 @@
         <span class="hero-btn-sub">Crea una stanza privata online</span>
       </button>
     </div>
-
-    <div class="hero-stats">
-      <span id="teamsCounter">12.458</span> squadre create oggi
-    </div>
-
-    <button class="leaderboard-btn" id="btnLeaderboard">
-      🏆 Migliori Squadre
-    </button>
+    <div class="hero-stats"><span id="teamsCounter">12.458</span> squadre create oggi</div>
+    <button class="leaderboard-btn" id="btnLeaderboard">🏆 Migliori Squadre</button>
   </div>
+</div>
+
+<!-- GOAL ANIMATION OVERLAY -->
+<div id="goalOverlay" class="goal-overlay">
+  <div class="goal-team" id="goalTeamName"></div>
+  <div class="goal-text">GOL!</div>
+  <div class="goal-scorer" id="goalScorer"></div>
 </div>
 
 <!-- CLASSIFICA MODAL -->
@@ -46,24 +46,9 @@
     <h2>Top 5 Squadre</h2>
     <div id="leaderboardContent">
       <div class="podium">
-        <div class="podium-spot" id="podium-1" onclick="showTeamDetails(0)">
-          <div class="podium-medal">🥇</div>
-          <div class="podium-name">-</div>
-          <div class="podium-rating">-</div>
-          <div class="podium-base">1</div>
-        </div>
-        <div class="podium-spot" id="podium-0" onclick="showTeamDetails(1)">
-          <div class="podium-medal">🥇</div>
-          <div class="podium-name">-</div>
-          <div class="podium-rating">-</div>
-          <div class="podium-base">2</div>
-        </div>
-        <div class="podium-spot" id="podium-2" onclick="showTeamDetails(2)">
-          <div class="podium-medal">🥉</div>
-          <div class="podium-name">-</div>
-          <div class="podium-rating">-</div>
-          <div class="podium-base">3</div>
-        </div>
+        <div class="podium-spot" id="podium-1" onclick="showTeamDetails(0)"><div class="podium-medal">🥇</div><div class="podium-name">-</div><div class="podium-rating">-</div><div class="podium-base">1</div></div>
+        <div class="podium-spot" id="podium-0" onclick="showTeamDetails(1)"><div class="podium-medal">🥇</div><div class="podium-name">-</div><div class="podium-rating">-</div><div class="podium-base">2</div></div>
+        <div class="podium-spot" id="podium-2" onclick="showTeamDetails(2)"><div class="podium-medal">🥉</div><div class="podium-name">-</div><div class="podium-rating">-</div><div class="podium-base">3</div></div>
       </div>
       <div class="lower-ranks" id="lowerRanks"></div>
     </div>
@@ -79,8 +64,7 @@
     <div class="modal-eyebrow" id="detailsEyebrow">Dettagli Rosa</div>
     <h2 id="detailsTitle">Squadra</h2>
     <div class="modal-avg" style="justify-content: center; gap: 20px; border:none; margin-bottom: 20px;">
-      <span class="modal-avg-label">Rating medio</span>
-      <span class="modal-avg-value" id="detailsAvg">--</span>
+      <span class="modal-avg-label">Rating medio</span><span class="modal-avg-value" id="detailsAvg">--</span>
     </div>
     <ul class="modal-list" id="detailsList"></ul>
     <div class="modal-actions">
@@ -130,9 +114,10 @@
       <button class="form-btn mp-opt" data-group="time" data-val="60">60 sec</button>
     </div>
     <label>Modalità</label>
-    <div class="formations-grid">
+    <div class="formations-grid" style="grid-template-columns: repeat(3, 1fr);">
       <button class="form-btn mp-opt active" data-group="mode" data-val="classica">Classica</button>
       <button class="form-btn mp-opt" data-group="mode" data-val="esperto">Esperto (?)</button>
+      <button class="form-btn mp-opt" data-group="mode" data-val="turni">A Turni</button>
     </div>
     <button class="btn-primary" id="btnCreateRoom" style="margin-top:24px;">Crea Stanza</button>
     <div style="margin-top:30px; border-top:1px solid var(--line-color); padding-top:20px;">
@@ -212,7 +197,7 @@
   </div>
   <div class="tournament-view" id="tournamentView">
     <div class="tourn-header"><h1 id="tournTitle">Mondiali</h1><p id="tournSubTitle">Fase a Eliminazione</p></div>
-    <div class="rounds-container" id="roundsContainer"></div>
+    <div id="tournamentContent"></div>
   </div>
 </div>
 
