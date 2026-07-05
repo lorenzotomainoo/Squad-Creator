@@ -83,10 +83,11 @@
     <label>Scegli la Formazione</label>
     <div class="formations-grid" id="setupFormations"></div>
     <label>Numero di Squadre</label>
-    <div class="formations-grid">
+    <div class="formations-grid" style="grid-template-columns: repeat(4, 1fr);">
       <button class="form-btn tourn-size-btn active" data-size="4">4</button>
       <button class="form-btn tourn-size-btn" data-size="8">8</button>
       <button class="form-btn tourn-size-btn" data-size="16">16</button>
+      <button class="form-btn tourn-size-btn" data-size="32">32</button>
     </div>
     <button class="btn-primary" id="btnStart">Inizia il Draft</button>
   </div>
@@ -102,10 +103,11 @@
     <label>La tua Formazione</label>
     <div class="formations-grid" id="hostFormations" style="margin-bottom:20px;"></div>
     <label>Numero di Squadre</label>
-    <div class="formations-grid">
+    <div class="formations-grid" style="grid-template-columns: repeat(4, 1fr);">
       <button class="form-btn mp-opt active" data-group="teams" data-val="4">4</button>
       <button class="form-btn mp-opt" data-group="teams" data-val="8">8</button>
       <button class="form-btn mp-opt" data-group="teams" data-val="16">16</button>
+      <button class="form-btn mp-opt" data-group="teams" data-val="32">32</button>
     </div>
     <label>Tempo per la scelta</label>
     <div class="formations-grid">
@@ -177,7 +179,7 @@
       </div>
       <p class="extraction-label" id="extractionLabel">Carica i CSV per iniziare</p>
       <div id="playerListWrap">
-        <div class="empty-state" id="emptyState">Nessuna squadra ancora estratta.<br>Apri l'ingranaggio in alto a destra per caricare i file CSV, poi premi "Pesca turno".</div>
+        <div class="empty-state" id="emptyState">Premi "Pesca turno" per estrarre la prima squadra.</div>
         <div class="player-list" id="playerList" style="display:none;"></div>
       </div>
     </section>
