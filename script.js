@@ -18,7 +18,6 @@
   let userTeamRating = 75;
   let isEspertoMode = false;
   let isMultiplayer = false;
-  let isTurnMode = false;
   let rerollsLeft = 3;
 
   let turnoCorrente = null;
@@ -92,7 +91,7 @@
   let connections = []; 
   let hostConnection = null; 
   let playerConnections = {}; 
-  let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [], turnOrder: [], currentTurn: 0, sharedTeam: null };
+  let mpState = { code: null, host: false, teams: 4, time: 15, mode: 'classica', players: [] };
   let myMpId = Math.random().toString(36).substr(2, 9);
 
   let pickTimerInterval = null;
@@ -132,7 +131,7 @@
   }
 
   document.getElementById('btnWorldCup').addEventListener('click', () => {
-    isMultiplayer = false; isTurnMode = false;
+    isMultiplayer = false;
     homeOverlay.classList.add('overlay-hidden');
     setupOverlay.classList.remove('overlay-hidden');
   });
@@ -316,15 +315,6 @@
       if (checkTournamentEnd()) return;
     } else if (msg.type === 'group_match_result') {
       handleGroupMatchResult(msg.groupIdx, msg.matchIdx, msg.s1, msg.s2);
-    } else if (msg.type === 'extract_team') {
-      if (mpState.currentTurn === mpState.turnOrder.indexOf(msg.id)) {
-         pescaTurno(true); 
-         broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
-      }
-    } else if (msg.type === 'pick_player') {
-      if (mpState.currentTurn === mpState.turnOrder.indexOf(msg.id)) {
-         handlePlayerPick(msg.pos);
-      }
     }
   }
 
@@ -348,13 +338,6 @@
       modalOverlay.classList.remove('show'); startTournament(msg.teams);
     } else if (msg.type === 'tournament_update') {
       applyTournamentState(msg.tournament);
-    } else if (msg.type === 'sync_extraction') {
-      turnoCorrente = msg.team; renderPlayerList(turnoCorrente.giocatori);
-      if (isTurnMode && mpState.currentTurn === mpState.turnOrder.indexOf(myMpId)) {
-        extractionLabel.innerHTML = `Tocca a te! Scegli un giocatore da ${escapeHTML(turnoCorrente.squadra)} <span class="year">· ${escapeHTML(turnoCorrente.anno)}</span>`;
-      } else {
-        extractionLabel.innerHTML = `Attendi... ${escapeHTML(mpState.players[mpState.turnOrder[mpState.currentTurn]].name)} sta scegliendo`;
-      }
     }
   }
 
@@ -391,26 +374,10 @@
 
   function startMpDraft() {
     isEspertoMode = (mpState.mode === 'esperto');
-    isTurnMode = (mpState.mode === 'turni');
     const me = mpState.players.find(p => p.id === myMpId) || { name: 'CPU', formation: '433' };
     nomeSquadra = me.name; currentFormation = me.formation;
     LAYOUT = FORMATIONS[currentFormation].layout; COMPATIBILITA = FORMATIONS[currentFormation].compat;
     initRosa(); renderPitch(); mpLobbyOverlay.classList.add('overlay-hidden');
-    
-    if (isTurnMode) {
-      mpState.turnOrder = mpState.players.filter(p => !p.isBot).map(p => p.id);
-      mpState.currentTurn = 0;
-      btnPesca.disabled = true; btnReroll.style.display = 'none';
-      
-      if (mpState.turnOrder.length <= 1) {
-        btnPesca.disabled = false;
-      }
-      
-      if (mpState.host) {
-        pescaTurno(true);
-        broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
-      }
-    }
   }
 
   function startPickTimer() {
@@ -501,7 +468,7 @@
     else { pitchRatingLive.textContent = ''; userTeamRating = 40; }
   }
 
-  function pescaTurno(shared = false) {
+  function pescaTurno() {
     if (Object.values(miaRosa).every(v => v !== null)){ showToast('La rosa è già completa!'); return; }
     const anni = Object.keys(database); if (anni.length === 0) return;
     let squadraValida = false, tentativi = 0, anno, squadre, squadra, giocatori;
@@ -516,20 +483,12 @@
     turnoCorrente = { anno, squadra, giocatori }; giocatoreScelto = null; posizioniDisponibili = [];
     extractionLabel.innerHTML = `${escapeHTML(squadra)} <span class="year">· ${escapeHTML(anno)}</span>`;
     renderPlayerList(giocatori); renderPitch();
-    if (isMultiplayer && !isTurnMode) startPickTimer();
-    if (rerollsLeft > 0 && !isTurnMode) { btnReroll.style.display = 'inline-block'; btnReroll.textContent = `Re-roll (${rerollsLeft})`; btnReroll.disabled = false; } 
+    if (isMultiplayer) startPickTimer();
+    if (rerollsLeft > 0) { btnReroll.style.display = 'inline-block'; btnReroll.textContent = `Re-roll (${rerollsLeft})`; btnReroll.disabled = false; } 
     else { btnReroll.style.display = 'none'; }
   }
 
-  btnPesca.addEventListener('click', () => {
-    if (isTurnMode) {
-      if (mpState.host) { pescaTurno(true); broadcastToClients({ type: 'sync_extraction', team: turnoCorrente }); }
-      else { sendSafe(hostConnection, { type: 'extract_team', id: myMpId }); }
-    } else {
-      pescaTurno();
-    }
-  });
-
+  btnPesca.addEventListener('click', () => { pescaTurno(); });
   btnReroll.addEventListener('click', () => { if (rerollsLeft <= 0) return; rerollsLeft--; pescaTurno(); });
 
   function renderPlayerList(giocatori){
@@ -563,51 +522,12 @@
     if (!giocatoreScelto) return;
     clearInterval(pickTimerInterval); draftTimer.style.display = 'none'; draftTimer.classList.remove('urgent'); btnReroll.style.display = 'none';
     
-    if (isTurnMode) {
-      if (mpState.host) handlePlayerPick(pos);
-      else sendSafe(hostConnection, { type: 'pick_player', id: myMpId, pos: pos });
-      return;
-    }
-
     miaRosa[pos] = giocatoreScelto; giocatoreScelto = null; posizioniDisponibili = []; turnoCorrente = null;
     playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
     extractionLabel.textContent = 'Pronto: premi "Pesca turno"'; renderPitch();
     if (window.innerWidth < 880) { setTimeout(() => { draftHeader.scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 300); }
     if (Object.values(miaRosa).every(v => v !== null)) mostraRisultatoFinale();
     else btnPesca.disabled = false;
-  }
-
-  function handlePlayerPick(pos) {
-    miaRosa[pos] = giocatoreScelto; 
-    const idx = turnoCorrente.giocatori.indexOf(giocatoreScelto);
-    if (idx > -1) turnoCorrente.giocatori.splice(idx, 1);
-    
-    giocatoreScelto = null; posizioniDisponibili = []; 
-    renderPitch();
-
-    if (Object.values(miaRosa).every(v => v !== null)) {
-      mostraRisultatoFinale();
-    } else {
-      if (mpState.turnOrder.length <= 1) {
-        playerList.innerHTML = ''; playerList.style.display = 'none'; emptyState.style.display = 'block';
-        extractionLabel.textContent = 'Pronto: pesca un nuovo turno';
-        btnPesca.disabled = false;
-      } else {
-        mpState.currentTurn = (mpState.currentTurn + 1) % mpState.turnOrder.length;
-        if (turnoCorrente.giocatori.length === 0 || !turnoCorrente.giocatori.some(g => Object.keys(COMPATIBILITA).some(p => miaRosa[p] === null && COMPATIBILITA[p].includes(g.ruolo)))) {
-           pescaTurno(true);
-        }
-        broadcastToClients({ type: 'sync_extraction', team: turnoCorrente });
-        
-        if (mpState.turnOrder[mpState.currentTurn] === myMpId) {
-          extractionLabel.innerHTML = `Tocca a te! Scegli un giocatore da ${escapeHTML(turnoCorrente.squadra)}`;
-          btnPesca.disabled = false;
-        } else {
-          extractionLabel.innerHTML = `Attendi... ${escapeHTML(mpState.players[mpState.turnOrder[mpState.currentTurn]].name)} sta scegliendo`;
-          btnPesca.disabled = true;
-        }
-      }
-    }
   }
 
   function mostraRisultatoFinale(){
@@ -657,7 +577,7 @@
     btnPesca.disabled = Object.keys(database).length === 0;
     builderView.classList.remove('hidden'); tournamentView.classList.remove('active'); tournament = null;
     if (peer) peer.destroy(); peer = null; connections = []; hostConnection = null; playerConnections = {};
-    isMultiplayer = false; isTurnMode = false; isEspertoMode = false; draftTimer.style.display = 'none';
+    isMultiplayer = false; isEspertoMode = false; draftTimer.style.display = 'none';
     homeOverlay.classList.remove('overlay-hidden');
   });
 
@@ -881,19 +801,18 @@
     updateScoreboard(score1, score2);
     sbMinute.textContent = "1'"; sbPhase.textContent = "Primo Tempo"; sbEvents.innerHTML = '';
     penaltiesBox.classList.remove('show');
-    sbBall.style.left = '50%'; // Reset pallina al centro
+    sbBall.style.left = '50%'; 
     
     const r1 = match.team1.rating, r2 = match.team2.rating;
     const prob1 = (r1 / (r1 + r2)) * 0.045; 
     const prob2 = (r2 / (r1 + r2)) * 0.045;
     let minute = 0;
-    let possession = 0; // -45 to 45 for left/right offset
+    let possession = 0; 
     
     matchInterval = setInterval(() => {
       minute++; sbMinute.textContent = minute + "'";
       if (minute === 46) sbPhase.textContent = "Secondo Tempo";
       
-      // Animazione Pallina: si sposta in base alle probabilità
       if (Math.random() < prob1 / (prob1 + prob2)) possession += Math.random() * 8;
       else possession -= Math.random() * 8;
       possession = Math.max(-45, Math.min(45, possession));
@@ -904,7 +823,7 @@
         const scorer = match.team1.roster[Math.floor(Math.random()*11)];
         triggerGoalAnimation(match.team1.name, scorer.nome, minute); 
         addGoalEvent(match.team1.name, minute); 
-        possession = 20; // Sposta la palla verso la squadra che ha fatto gol
+        possession = 20; 
         sbBall.style.left = `calc(50% + ${possession}%)`;
         if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
         if (match.team1.isUser) tournament.userStats.gf++; if (match.team2.isUser) tournament.userStats.gs++;
@@ -914,7 +833,7 @@
         const scorer = match.team2.roster[Math.floor(Math.random()*11)];
         triggerGoalAnimation(match.team2.name, scorer.nome, minute); 
         addGoalEvent(match.team2.name, minute); 
-        possession = -20; // Sposta la palla verso la squadra che ha fatto gol
+        possession = -20; 
         sbBall.style.left = `calc(50% + ${possession}%)`;
         if (match.team1.isUser || match.team2.isUser) tournament.userStats = tournament.userStats || {gf:0, gs:0, wins:0, losses:0};
         if (match.team2.isUser) tournament.userStats.gf++; if (match.team1.isUser) tournament.userStats.gs++;
